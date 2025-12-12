@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import bannerImage from "../../assetes/herrro.jpg"
+import bannerImage from "../../assets/hero.jpg"
 export default function Banner() {
   return (
     <section className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-24">

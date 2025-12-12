@@ -57,7 +57,7 @@ export default function StudentsPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto mt-10 px-4">
+    <div className="max-w-7xl mt-20 mx-auto mt-10 px-4">
 
       <h1 className="text-5xl font-bold text-center mb-10 text-blue-800">
         Give Your Data Correctly

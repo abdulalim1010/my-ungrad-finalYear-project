@@ -69,7 +69,7 @@ export default function StudentForm({ onSubmit }) {
   };
 
   return (
-    <div className="p-10 bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl border border-gray-100">
+    <div className="p-10  bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl border border-gray-100">
 
       <h1 className="text-3xl font-bold mb-8 text-blue-700 text-center tracking-wide">
         Add Student (EEE)
