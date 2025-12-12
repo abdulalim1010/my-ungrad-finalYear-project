@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Dr. Sumon Kumar Debnath",
+    "designation": "Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "john.doe@example.com",
+    "phone": "01710000001",
+    "image": "https://randomuser.me/api/portraits/men/1.jpg",
+    "bio": "Dr. Sumon Kumar Debnath is currently working as a Professor at the Department of Electrical and Electronic Engineering at Begum Rokeya University, Rangpur, Bangladesh. He has completed his PhD Engineering from the Department of Electronic and Communication Engineering at the Okayama University, Japan. His current research focuses on Wireless Communication System, Wireless Network, MANET, and Machine Learning and Deep Learning."
+  },
+  {
+    "name": "Dr. Md. Ferdous Rahman",
+    "designation": "Associate Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "jane.smith@example.com",
+    "phone": "01710000002",
+    "image": "https://randomuser.me/api/portraits/women/2.jpg",
+    "bio": "Dr. Md. Ferdous Rahman specializes in Power Electronics and Electrical Machines. He has contributed to several national research projects and published papers in IEEE journals."
+  },
+  {
+    "name": "A. K. M. Mahmudul Haque",
+    "designation": "Assistant Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "ahmed.khan@example.com",
+    "phone": "01710000003",
+    "image": "https://i.ibb.co.com/rfcBvcYs/2025-09-24-a-k-m-mahmudul-haque-1758703343-196.png",
+    "bio": "A. K. M. Mahmudul Haque focuses on Signal Processing and Embedded Systems. He actively mentors students on robotics and automation projects."
+  },
+  {
+    "name": "Dr. Md. Ahsan Habib",
+    "designation": "Associate Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "maria.gomez@example.com",
+    "phone": "01710000004",
+    "image": "https://randomuser.me/api/portraits/women/4.jpg",
+    "bio": "Dr. Md. Ahsan Habib specializes in Control Systems and Smart Grid technology. He has supervised multiple MSc and PhD students in related research areas."
+  },
+  {
+    "name": "Md. Monirul Islam",
+    "designation": "Assistant Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "rajib.mmi@brur.ac.bd",
+    "phone": "01710000005",
+    "image": "https://randomuser.me/api/portraits/men/5.jpg",
+    "bio": "Md. Monirul Islam is an expert in Renewable Energy Systems and Solar Power Integration. He has conducted workshops and training programs for students and faculty."
+  },
+  {
+    "name": "Md. Sharif Uddin",
+    "designation": "Associate Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "sharif@brur.ac.bd",
+    "phone": "8801741999630",
+    "image": "https://randomuser.me/api/portraits/women/6.jpg",
+    "bio": "Md. Sharif Uddin works on Microgrid and Energy Storage Systems. He has published research papers on sustainable energy solutions."
+  },
+  {
+    "name": "Md. Hasan Ali",
+    "designation": "Associate Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "david.brown@example.com",
+    "phone": "01710000007",
+    "image": "https://randomuser.me/api/portraits/men/7.jpg",
+    "bio": "Md. Hasan Ali focuses on Industrial Automation and Smart Manufacturing. He guides students in hands-on projects and industrial collaborations."
+  },
+  {
+    "name": "Iffat Ara Badhan",
+    "designation": "Assistant Professor",
+    "department": "Electrical & Electronic Engineering",
+    "email": "iabadhan@brur.ac.bd",
+    "phone": "01676014773",
+    "image": "https://randomuser.me/api/portraits/women/8.jpg",
+    "bio": "Iffat Ara Badhan is an expert in Embedded Systems and IoT Applications. She actively mentors students for research and competitions."
+  },
+  {
+    "name": "MD. ABUL MUNJER",
+    "designation": "Lecturer",
+    "department": "Electrical & Electronic Engineering",
+    "email": "munjer_eee@brur.ac.bd",
+    "phone": "01723885966",
+    "image": "https://randomuser.me/api/portraits/women/8.jpg",
+    "bio": "MD. ABUL MUNJER is currently working as a Lecturer at the Department of Electrical and Electronic Engineering at Begum Rokeya University, Rangpur, Bangladesh. He has completed his M.Sc. Engineering from the Department of Electrical and Electronic Engineering at the University of Rajshahi, Bangladesh. His current research focuses on Wireless Communication System, Wireless Network, MANET, and Machine Learning and Deep Learning."
+  },
+  {
+    "name": "Bipanko Kumar Monda",
+    "designation": "Lecturer",
+    "department": "Electrical & Electronic Engineering",
+    "email": "bipanko.apee14@eee.brur.ac.bd",
+    "phone": "01772891996",
+    "image": "https://i.ibb.co.com/Cpgm4ryF/2024-05-04-bipanko-kumar-mondal-1714803888-247.jpg",
+    "bio": "Bipanko Kumar Monda is currently working as a Lecturer at the Department of Electrical and Electronic Engineering at Begum Rokeya University, Rangpur, Bangladesh. He has completed his M.Sc. Engineering from the Department of Electrical and Electronic Engineering at the University of Rajshahi, Bangladesh. His current research focuses on Thin film Materials for solar energy and Photovoltaic cells."
+  }
+]
