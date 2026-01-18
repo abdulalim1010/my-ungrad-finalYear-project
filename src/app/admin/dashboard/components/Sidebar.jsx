@@ -27,11 +27,7 @@ const menu = [
     href: "/admin/dashboard/users",
     icon: Users,
   },
-  {
-    name: "Academic Files",
-    href: "/admin/dashboard/academic",
-    icon: BookOpen,
-  },
+ 
 
   /* ================= PASSED STUDENTS ================= */
   {
@@ -40,6 +36,31 @@ const menu = [
     icon: Users, // এখানে তুমি অন্য icon চাওলে পরিবর্তন করতে পারো
   },
 
+
+
+  /*================= ACADEMIC ================= */
+  {
+  name: "Academic Files",
+  icon: BookOpen,
+  submenu: [
+    {
+      name: "Notes",
+      href: "/admin/dashboard/academic/notes",
+    },
+    {
+      name: "Books",
+      href: "/admin/dashboard/academic/books",
+    },
+    {
+      name: "Syllabus",
+      href: "/admin/dashboard/academic/syllabus",
+    },
+    {
+      name: "Routine",
+      href: "/admin/dashboard/academic/routine",
+    },
+  ],
+},
   /* ================= RESEARCH ================= */
   {
     name: "Research",

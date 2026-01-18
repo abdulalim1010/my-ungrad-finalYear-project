@@ -16,6 +16,7 @@ export default function Home() {
       <NewsPage/>
 
       <GalleryPage />
+      
       <PassedStudentsSection/>
     </div>
   );

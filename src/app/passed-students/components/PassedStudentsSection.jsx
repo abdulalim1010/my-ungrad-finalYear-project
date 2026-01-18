@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "";
@@ -20,6 +20,10 @@ export default function PassedStudentsSection() {
   const [selectedId, setSelectedId] = useState(null);
   const [isHovering, setIsHovering] = useState(false);
 
+  // 🔍 Search states
+  const [searchName, setSearchName] = useState("");
+  const [searchBatch, setSearchBatch] = useState("");
+
   useEffect(() => {
     async function fetchStudents() {
       try {
@@ -35,7 +39,25 @@ export default function PassedStudentsSection() {
     fetchStudents();
   }, []);
 
-  const scrollStudents = [...students, ...students];
+  // 🔎 Filter logic (Name + Batch only)
+  const filteredStudents = useMemo(() => {
+    return students.filter((s) => {
+      const nameMatch = s.name
+        .toLowerCase()
+        .includes(searchName.toLowerCase());
+      const batchMatch = s.batch
+        .toLowerCase()
+        .includes(searchBatch.toLowerCase());
+
+      return nameMatch && batchMatch;
+    });
+  }, [students, searchName, searchBatch]);
+
+  const scrollStudents =
+    searchName || searchBatch
+      ? filteredStudents
+      : [...students, ...students];
+
   const selectedStudent = students.find((s) => s._id === selectedId);
 
   return (
@@ -43,7 +65,7 @@ export default function PassedStudentsSection() {
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
         {/* ===== HEADER ===== */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-14">
           <h2 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white">
             Passed Students
             <span className="block text-blue-600 dark:text-blue-400 mt-2">
@@ -52,7 +74,8 @@ export default function PassedStudentsSection() {
           </h2>
 
           <p className="mt-6 max-w-2xl mx-auto text-gray-600 dark:text-gray-300 text-lg">
-            Celebrating the successful graduates of the Department of Electrical and Electronic Engineering.
+            Celebrating the successful graduates of the Department of Electrical
+            and Electronic Engineering.
           </p>
 
           <Link
@@ -61,6 +84,25 @@ export default function PassedStudentsSection() {
           >
             Add Your Name
           </Link>
+        </div>
+
+        {/* ===== SEARCH BAR ===== */}
+        <div className="mb-16 flex flex-col md:flex-row gap-4 justify-center">
+          <input
+            type="text"
+            placeholder="Search by Name"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            className="w-full md:w-72 px-5 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+          <input
+            type="text"
+            placeholder="Search by Batch (e.g. 2019)"
+            value={searchBatch}
+            onChange={(e) => setSearchBatch(e.target.value)}
+            className="w-full md:w-72 px-5 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
         </div>
 
         {/* ===== AUTO SCROLLING CARDS ===== */}
@@ -72,16 +114,29 @@ export default function PassedStudentsSection() {
           <motion.div
             className="flex gap-6 md:gap-8 w-max"
             animate={{
-              x: selectedId || isHovering ? 0 : ["0%", "-50%"],
+              x:
+                selectedId ||
+                isHovering ||
+                searchName ||
+                searchBatch
+                  ? 0
+                  : ["0%", "-50%"],
             }}
             transition={{
-              repeat: selectedId || isHovering ? 0 : Infinity,
+              repeat:
+                selectedId ||
+                isHovering ||
+                searchName ||
+                searchBatch
+                  ? 0
+                  : Infinity,
               duration: 35,
               ease: "linear",
             }}
           >
             {scrollStudents.map((s, idx) => {
               const gradient = gradients[idx % gradients.length];
+
               return (
                 <motion.div
                   key={`${s._id}-${idx}`}
@@ -96,19 +151,13 @@ export default function PassedStudentsSection() {
                     bg-gradient-to-br ${gradient}
                   `}
                 >
-                  {/* IMAGE */}
                   <Image
                     src={s.photoUrl}
                     width={140}
                     height={140}
                     alt={s.name}
                     unoptimized
-                    className="
-                      w-[140px] h-[140px]
-                      rounded-full mx-auto
-                      border-4 border-white/80
-                      object-cover shadow-xl
-                    "
+                    className="w-[140px] h-[140px] rounded-full mx-auto border-4 border-white/80 object-cover shadow-xl"
                   />
 
                   <h3 className="text-xl md:text-2xl font-extrabold mt-6 text-center">
@@ -132,13 +181,13 @@ export default function PassedStudentsSection() {
           </motion.div>
         </div>
 
-        {/* ===== SELECTED OVERLAY CARD ===== */}
+        {/* ===== SELECTED MODAL ===== */}
         <AnimatePresence>
           {selectedStudent && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              exit={{ opacity: 0, scale: 0.85 }}
               className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center z-[100]"
               onClick={() => setSelectedId(null)}
             >
