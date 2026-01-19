@@ -268,10 +268,10 @@ export default function AdminNoticePage() {
               </label>
             )}
             {loadingUpload && (
-              <p className="text-sm text-gray-500 mt-2 flex items-center gap-2">
+              <div className="text-sm text-gray-500 mt-2 flex items-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                 Uploading file...
-              </p>
+              </div>
             )}
           </div>
 
