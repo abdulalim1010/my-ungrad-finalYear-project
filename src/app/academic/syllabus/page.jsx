@@ -2,13 +2,8 @@
 
 import { useMemo, useState } from "react";
 import syllabusData from "@/data/syllabus.json";
-import {
-  FileText,
-  Download,
-  Filter,
-  BookOpen,
-  Calendar,
-} from "lucide-react";
+import { FileText, Filter, BookOpen } from "lucide-react";
+import { generateSemesterSyllabusPDF } from "@/utils/syllabusPdf";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
@@ -17,53 +12,51 @@ export default function SyllabusPage() {
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
 
-  // ================= FILTER LOGIC =================
-  const filteredSyllabus = useMemo(() => {
-    return syllabusData.filter((item) => {
-      const semesterMatch = semester
-        ? String(item.semester) ===
-          semester.replace("st", "").replace("nd", "").replace("rd", "")
-        : true;
+  // =============== NORMALIZE + FILTER =================
+  const filteredData = useMemo(() => {
+    let result = [];
 
-      const yearMatch = year
-        ? Math.ceil(item.semester / 2) ===
-          Number(year.replace("st", "").replace("nd", "").replace("rd", ""))
-        : true;
+    syllabusData.years.forEach((y) => {
+      const yearNumber = y.year.split(" ")[0]; // "1st"
 
-      return semesterMatch && yearMatch;
+      if (year && year !== yearNumber) return;
+
+      y.semesters.forEach((s) => {
+        const semesterNumber = s.semester.split(" ")[0]; // "1st"
+
+        if (semester && semester !== semesterNumber) return;
+
+        result.push({
+          year: y.year,
+          semester: s.semester,
+          subjects: s.subjects,
+        });
+      });
     });
+
+    return result;
   }, [year, semester]);
-
-  // ================= DOWNLOAD JSON =================
-  const downloadJSON = (data, filename) => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* ================= HEADER ================= */}
+
+        {/* ===== HEADER ===== */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-600 rounded-full mb-4">
             <FileText className="text-white" size={30} />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Course Syllabus
+           <h1 className="text-5xl font-bold text-blue-800 mb-8">
+            {syllabusData.university}
           </h1>
-          <p className="text-gray-600">
-            Official syllabus (JSON based, always available)
-          </p>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {syllabusData.program}
+          </h1>
+         
+          <p className="text-gray-600">{syllabusData.duration}</p>
         </div>
 
-        {/* ================= FILTER ================= */}
+        {/* ===== FILTER ===== */}
         <div className="bg-white p-6 rounded-xl shadow mb-10">
           <div className="flex items-center gap-2 mb-4">
             <Filter size={18} className="text-orange-600" />
@@ -78,9 +71,7 @@ export default function SyllabusPage() {
             >
               <option value="">All Years</option>
               {YEARS.map((y) => (
-                <option key={y} value={y}>
-                  {y} Year
-                </option>
+                <option key={y} value={y}>{y} Year</option>
               ))}
             </select>
 
@@ -91,68 +82,92 @@ export default function SyllabusPage() {
             >
               <option value="">All Semesters</option>
               {SEMESTERS.map((s) => (
-                <option key={s} value={s}>
-                  {s} Semester
-                </option>
+                <option key={s} value={s}>{s} Semester</option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* ================= CONTENT ================= */}
-        {filteredSyllabus.length === 0 ? (
-          <div className="bg-white p-12 rounded-xl shadow text-center">
-            <FileText size={48} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600">No syllabus found</p>
+        {/* ===== CONTENT ===== */}
+{filteredData.length === 0 ? (
+  <div className="bg-white p-12 rounded-2xl shadow text-center">
+    <FileText size={48} className="mx-auto text-gray-400 mb-4" />
+    <p className="text-gray-600 text-lg">No syllabus found</p>
+  </div>
+) : (
+  <div className="space-y-10">
+    {filteredData.map((item, i) => (
+      <div
+        key={i}
+        className="bg-white rounded-2xl shadow-md overflow-hidden"
+      >
+        {/* ===== CARD HEADER ===== */}
+        <div className="px-6 py-4 border-b bg-gray-50 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">
+              {item.year}
+            </h2>
+            <p className="text-sm text-gray-600">
+              {item.semester}
+            </p>
           </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSyllabus.map((s) => (
+
+          <span className="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full w-fit">
+            Total Subjects: {item.subjects.length}
+          </span>
+        </div>
+
+        {/* ===== SUBJECT LIST ===== */}
+        <div className="px-6 py-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {item.subjects.map((sub, idx) => (
               <div
-                key={s.id}
-                className="bg-white rounded-xl shadow hover:shadow-lg transition p-6 flex flex-col"
+                key={idx}
+                className="border rounded-xl p-4 hover:shadow transition"
               >
-                <div className="flex justify-between mb-3">
-                  <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">
-                    Semester {s.semester}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {s.credits} Credits
-                  </span>
-                </div>
+                <p className="font-semibold text-gray-800 mb-1">
+                  {sub.title}
+                </p>
 
-                <h3 className="font-semibold text-gray-800 mb-1">
-                  {s.course_title}
-                </h3>
-
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-gray-600 mb-1">
                   <BookOpen size={14} className="inline mr-1" />
-                  {s.course_code}
+                  {sub.code}
                 </p>
 
-                <p className="text-xs text-gray-500 mb-4">
-                  Contact Hours: {s.contact_hours}
+                <p className="text-xs text-gray-500">
+                  Credits: {sub.credits} | Contact Hours:{" "}
+                  {sub.contact_hours || "—"}
                 </p>
-
-                {/* ACTION */}
-                <div className="mt-auto">
-                  <button
-                    onClick={() =>
-                      downloadJSON(
-                        s,
-                        `${s.course_code.replace(" ", "_")}_syllabus.json`
-                      )
-                    }
-                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 text-sm"
-                  >
-                    <Download size={16} />
-                    Download JSON
-                  </button>
-                </div>
               </div>
             ))}
           </div>
-        )}
+        </div>
+
+        {/* ===== CARD FOOTER (DOWNLOAD BUTTON) ===== */}
+        <div className="px-6 py-4 border-t bg-gray-50 flex justify-end">
+          <button
+            onClick={() => {
+              const pdf = generateSemesterSyllabusPDF({
+                program: syllabusData.program,
+                year: item.year,
+                semester: item.semester,
+                subjects: item.subjects,
+              });
+              pdf.save(`${item.year}_${item.semester}_Syllabus.pdf`);
+            }}
+            className="flex items-center gap-2 px-6 py-2.5
+                       bg-orange-600 text-white rounded-lg
+                       hover:bg-orange-700 transition text-sm font-medium"
+          >
+            Download PDF
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+
       </div>
     </div>
   );

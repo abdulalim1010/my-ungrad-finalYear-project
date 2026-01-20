@@ -1,968 +1,127 @@
-[
-    {
-        "id": 1,
-        "semester": 1,
-        "course_title": "Electrical Circuit I",
-        "course_code": "EEE 1101",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 2,
-        "semester": 1,
-        "course_title": "Electricity and Magnetism",
-        "course_code": "EEE 1103",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 3,
-        "semester": 1,
-        "course_title": "Discrete Mathematics",
-        "course_code": "EEE 1105",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 4,
-        "semester": 1,
-        "course_title": "Engineering Drawing",
-        "course_code": "EEE 1106",
-        "credits": "1.50",
-        "contact_hours": "2.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 5,
-        "semester": 1,
-        "course_title": "Engg. Physics",
-        "course_code": "PHY 1101",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 6,
-        "semester": 1,
-        "course_title": "Engg. Chemistry",
-        "course_code": "CHEM 1103",
-        "credits": "2.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 7,
-        "semester": 1,
-        "course_title": "Engg. Mathematics-I",
-        "course_code": "MATH 1105",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 8,
-        "semester": 2,
-        "course_title": "Electrical Circuit II",
-        "course_code": "EEE 1201",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 9,
-        "semester": 2,
-        "course_title": "Sessional Based on EEE 1201",
-        "course_code": "EEE 1202",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 10,
-        "semester": 2,
-        "course_title": "Electronic Devices",
-        "course_code": "EEE 1203",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 11,
-        "semester": 2,
-        "course_title": "Computer Programming",
-        "course_code": "EEE 1205",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 12,
-        "semester": 2,
-        "course_title": "Sessional Based on EEE 1205",
-        "course_code": "EEE 1206",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 13,
-        "semester": 2,
-        "course_title": "Engg. Mathematics-II",
-        "course_code": "MATH 1201",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 14,
-        "semester": 2,
-        "course_title": "Financial Accounting & Economic Analysis",
-        "course_code": "ACT 1203",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 15,
-        "semester": 2,
-        "course_title": "Technical and Communicative English",
-        "course_code": "ENG 1205",
-        "credits": "2.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 16,
-        "semester": 2,
-        "course_title": "Viva-voce",
-        "course_code": "EEE 1207",
-        "credits": "1.00",
-        "contact_hours": " ",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 17,
-        "semester": 3,
-        "course_title": "Electronic Circuit I",
-        "course_code": "EEE 2101",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 18,
-        "semester": 3,
-        "course_title": "Sessional Based on EEE 2101",
-        "course_code": "EEE 2102",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 19,
-        "semester": 3,
-        "course_title": "Digital Electronics & Logic Design",
-        "course_code": "EEE 2103",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 20,
-        "semester": 3,
-        "course_title": "Sessional Based on EEE 2103",
-        "course_code": "EEE 2104",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 21,
-        "semester": 3,
-        "course_title": "Energy Conversion I",
-        "course_code": "EEE 2105",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 22,
-        "semester": 3,
-        "course_title": "Electrical Properties of Material",
-        "course_code": "EEE 2107",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 23,
-        "semester": 3,
-        "course_title": "Engg. Mathematics-III",
-        "course_code": "MATH 2101",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 24,
-        "semester": 3,
-        "course_title": "Bangladesh Studies/ Professional Ethics",
-        "course_code": "SOC 2103",
-        "credits": "2.00",
-        "contact_hours": "2.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 25,
-        "semester": 4,
-        "course_title": "Electronic Circuit II",
-        "course_code": "EEE 2201",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 26,
-        "semester": 4,
-        "course_title": "Sessional Based on EEE 2201",
-        "course_code": "EEE 2202",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 27,
-        "semester": 4,
-        "course_title": "Energy Conversion II",
-        "course_code": "EEE 2203",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 28,
-        "semester": 4,
-        "course_title": "Sessional Based on EEE 2105 & EEE 2203",
-        "course_code": "EEE 2204",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 29,
-        "semester": 4,
-        "course_title": "Fundamentals of Mechanical Engineering",
-        "course_code": "EEE 2205",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 30,
-        "semester": 4,
-        "course_title": "Sessional Based on EEE 2205",
-        "course_code": "EEE 2206",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 31,
-        "semester": 4,
-        "course_title": "Engg. Mathematics-IV",
-        "course_code": "MATH 2201",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 32,
-        "semester": 4,
-        "course_title": "Basic Statistical Analysis & Probability Theory",
-        "course_code": "STAT 2203",
-        "credits": "2.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 33,
-        "semester": 4,
-        "course_title": "Viva-voce",
-        "course_code": "EEE 2207",
-        "credits": "1.00",
-        "contact_hours": " ",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 34,
-        "semester": 5,
-        "course_title": "Power System I",
-        "course_code": "EEE 3101",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 35,
-        "semester": 5,
-        "course_title": "Sessional Based on EEE 3101",
-        "course_code": "EEE 3102",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 36,
-        "semester": 5,
-        "course_title": "Communication System I",
-        "course_code": "EEE 3103",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 37,
-        "semester": 5,
-        "course_title": "Sessional Based on EEE 3103",
-        "course_code": "EEE 3104",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 38,
-        "semester": 5,
-        "course_title": "Industrial and Power Electronics",
-        "course_code": "EEE 3105",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 39,
-        "semester": 5,
-        "course_title": "Sessional Based on EEE 3105",
-        "course_code": "EEE 3106",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 40,
-        "semester": 5,
-        "course_title": "Signal and Systems using MATLAB",
-        "course_code": "EEE 3107",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 41,
-        "semester": 5,
-        "course_title": "Sessional Based on EEE 3107",
-        "course_code": "EEE 3108",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 42,
-        "semester": 5,
-        "course_title": "Electromagnetic Fields and Waves",
-        "course_code": "EEE 3109",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 43,
-        "semester": 6,
-        "course_title": "Power System II",
-        "course_code": "EEE 3201",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 44,
-        "semester": 6,
-        "course_title": "Sessional Based on EEE 3201",
-        "course_code": "EEE 3202",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 45,
-        "semester": 6,
-        "course_title": "Communication System II",
-        "course_code": "EEE 3203",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 46,
-        "semester": 6,
-        "course_title": "Sessional Based on EEE 3203",
-        "course_code": "EEE 3204",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 47,
-        "semester": 6,
-        "course_title": "Digital Signal Processing",
-        "course_code": "EEE 3205",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 48,
-        "semester": 6,
-        "course_title": "Sessional Based on EEE 3201",
-        "course_code": "EEE 3206",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 49,
-        "semester": 6,
-        "course_title": "Control System",
-        "course_code": "EEE 3207",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 50,
-        "semester": 6,
-        "course_title": "Sessional Based on EEE 3207",
-        "course_code": "EEE 3208",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 51,
-        "semester": 6,
-        "course_title": "Viva-voce",
-        "course_code": "EEE 3209",
-        "credits": "1.00",
-        "contact_hours": " ",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 52,
-        "semester": 7,
-        "course_title": "Project /Thesis",
-        "course_code": "EEE 4100",
-        "credits": "0.00",
-        "contact_hours": " ",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 53,
-        "semester": 7,
-        "course_title": "Microprocessor and Embedded Systems",
-        "course_code": "EEE 4101",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 54,
-        "semester": 7,
-        "course_title": "Sessional Based on EEE 4101",
-        "course_code": "EEE 4102",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 55,
-        "semester": 7,
-        "course_title": "Antenna and Propagation",
-        "course_code": "EEE 4103",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 56,
-        "semester": 7,
-        "course_title": "Computer Network and Data Communication",
-        "course_code": "EEE 4105",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 57,
-        "semester": 7,
-        "course_title": "Sessional Based on EEE 4105",
-        "course_code": "EEE 4106",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 58,
-        "semester": 7,
-        "course_title": "Elective I",
-        "course_code": "EEE ####",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 59,
-        "semester": 7,
-        "course_title": "Sessional Based on EEE ####",
-        "course_code": "EEE ####",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 60,
-        "semester": 7,
-        "course_title": "Elective-II",
-        "course_code": "EEE ####",
-        "credits": "3",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 61,
-        "semester": 8,
-        "course_title": "Project/Thesis",
-        "course_code": "EEE 4200",
-        "credits": "4.00",
-        "contact_hours": " ",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 62,
-        "semester": 8,
-        "course_title": "Wireless and Mobile Communication",
-        "course_code": "EEE 4201",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 63,
-        "semester": 8,
-        "course_title": "Sessional Based on EEE 4201",
-        "course_code": "EEE 4202",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 64,
-        "semester": 8,
-        "course_title": "Radio & TV Engineering",
-        "course_code": "EEE 4203",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 65,
-        "semester": 8,
-        "course_title": "Elective-II",
-        "course_code": "EEE ####",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 66,
-        "semester": 8,
-        "course_title": "Sessional Based on EEE ####",
-        "course_code": "EEE ####",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 67,
-        "semester": 8,
-        "course_title": "Elective-II",
-        "course_code": "EEE ####",
-        "credits": "3.00",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 68,
-        "semester": 8,
-        "course_title": "Sessional Based on EEE ####",
-        "course_code": "EEE ####",
-        "credits": "1.50",
-        "contact_hours": "3.00",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
-    },
-    {
-        "id": 69,
-        "semester": 8,
-        "course_title": "Viva-voce",
-        "course_code": "EEE 4207",
-        "credits": "1.00",
-        "contact_hours": " ",
-        "topics": [
-            " "
-        ],
-        "books": [
-            " "
-        ]
+{
+  "program": "BSc in Electrical and Electronic Engineering (EEE)",
+  "university": "Begum Rokeya University, Rangpur",
+  "duration": "4 Years",
+  "years": [
+    {
+      "year": "1st Year",
+      "semesters": [
+        {
+          "semester": "1st Semester",
+          "subjects": [
+            { "code": "EEE 1101", "title": "Electrical Circuit I", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 1103", "title": "Electricity and Magnetism", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 1105", "title": "Discrete Mathematics", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 1106", "title": "Engineering Drawing", "credits": "1.50", "contact_hours": "2.00" },
+            { "code": "PHY 1101", "title": "Engg. Physics", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "CHEM 1103", "title": "Engg. Chemistry", "credits": "2.00", "contact_hours": "3.00" },
+            { "code": "MATH 1105", "title": "Engg. Mathematics-I", "credits": "3.00", "contact_hours": "3.00" }
+          ]
+        },
+        {
+          "semester": "2nd Semester",
+          "subjects": [
+            { "code": "EEE 1201", "title": "Electrical Circuit II", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 1202", "title": "Sessional Based on EEE 1201", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 1203", "title": "Electronic Devices", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 1205", "title": "Computer Programming", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 1206", "title": "Sessional Based on EEE 1205", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "MATH 1201", "title": "Engg. Mathematics-II", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "ACT 1203", "title": "Financial Accounting & Economic Analysis", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "ENG 1205", "title": "Technical and Communicative English", "credits": "2.00", "contact_hours": "3.00" },
+            { "code": "EEE 1207", "title": "Viva-voce", "credits": "1.00", "contact_hours": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "year": "2nd Year",
+      "semesters": [
+        {
+          "semester": "1st Semester",
+          "subjects": [
+            { "code": "EEE 2101", "title": "Electronic Circuit I", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 2102", "title": "Sessional Based on EEE 2101", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 2103", "title": "Digital Electronics & Logic Design", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 2104", "title": "Sessional Based on EEE 2103", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 2105", "title": "Energy Conversion I", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 2107", "title": "Electrical Properties of Material", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "MATH 2101", "title": "Engg. Mathematics-III", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "SOC 2103", "title": "Bangladesh Studies / Professional Ethics", "credits": "2.00", "contact_hours": "2.00" }
+          ]
+        },
+        {
+          "semester": "2nd Semester",
+          "subjects": [
+            { "code": "EEE 2201", "title": "Electronic Circuit II", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 2202", "title": "Sessional Based on EEE 2201", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 2203", "title": "Energy Conversion II", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 2204", "title": "Sessional Based on EEE 2105 & 2203", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 2205", "title": "Fundamentals of Mechanical Engineering", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 2206", "title": "Sessional Based on EEE 2205", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "MATH 2201", "title": "Engg. Mathematics-IV", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "STAT 2203", "title": "Basic Statistical Analysis & Probability Theory", "credits": "2.00", "contact_hours": "3.00" },
+            { "code": "EEE 2207", "title": "Viva-voce", "credits": "1.00", "contact_hours": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "year": "3rd Year",
+      "semesters": [
+        {
+          "semester": "1st Semester",
+          "subjects": [
+            { "code": "EEE 3101", "title": "Power System I", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3102", "title": "Sessional Based on EEE 3101", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3103", "title": "Communication System I", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3104", "title": "Sessional Based on EEE 3103", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3105", "title": "Industrial and Power Electronics", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3106", "title": "Sessional Based on EEE 3105", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3107", "title": "Signal and Systems using MATLAB", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3108", "title": "Sessional Based on EEE 3107", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3109", "title": "Electromagnetic Fields and Waves", "credits": "3.00", "contact_hours": "3.00" }
+          ]
+        },
+        {
+          "semester": "2nd Semester",
+          "subjects": [
+            { "code": "EEE 3201", "title": "Power System II", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3202", "title": "Sessional Based on EEE 3201", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3203", "title": "Communication System II", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3204", "title": "Sessional Based on EEE 3203", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3205", "title": "Digital Signal Processing", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3207", "title": "Control System", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 3208", "title": "Sessional Based on EEE 3207", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 3209", "title": "Viva-voce", "credits": "1.00", "contact_hours": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "year": "4th Year",
+      "semesters": [
+        {
+          "semester": "1st Semester",
+          "subjects": [
+            { "code": "EEE 4100", "title": "Project / Thesis", "credits": "0.00", "contact_hours": "" },
+            { "code": "EEE 4101", "title": "Microprocessor and Embedded Systems", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 4102", "title": "Sessional Based on EEE 4101", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 4103", "title": "Antenna and Propagation", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 4105", "title": "Computer Network and Data Communication", "credits": "3.00", "contact_hours": "3.00" }
+          ]
+        },
+        {
+          "semester": "2nd Semester",
+          "subjects": [
+            { "code": "EEE 4200", "title": "Project / Thesis", "credits": "4.00", "contact_hours": "" },
+            { "code": "EEE 4201", "title": "Wireless and Mobile Communication", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 4202", "title": "Sessional Based on EEE 4201", "credits": "1.50", "contact_hours": "3.00" },
+            { "code": "EEE 4203", "title": "Radio & TV Engineering", "credits": "3.00", "contact_hours": "3.00" },
+            { "code": "EEE 4207", "title": "Viva-voce", "credits": "1.00", "contact_hours": "" }
+          ]
+        }
+      ]
     }
-]
+  ]
+}
