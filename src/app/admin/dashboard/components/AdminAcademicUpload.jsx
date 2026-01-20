@@ -1,53 +1,67 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import { useEffect, useState } from "react";
+import syllabusData from "../../../../data/syllabus.json";
 
-const MySwal = withReactContent(Swal);
+export default function AdminAcademicUpload() {
+  const [type, setType] = useState("note"); // note | book | routine
+  const [year, setYear] = useState("1st");
+  const [semester, setSemester] = useState("1st");
 
-export default function AdminAcademicUpload({ type }) {
-  const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
-  const [year, setYear] = useState("");
-  const [semester, setSemester] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
 
-  /* ================= FETCH FILES ================= */
-  const fetchFiles = async () => {
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [loadingList, setLoadingList] = useState(false);
+
+  // syllabus helper (dropdown only)
+  const syllabusSubjects = syllabusData.filter(
+    (s) =>
+      String(s.semester) ===
+      semester.replace("st", "").replace("nd", "").replace("rd", "")
+  );
+
+  // ================= FETCH UPLOADED FILES =================
+  const loadUploadedFiles = async () => {
+    setLoadingList(true);
     try {
-      const res = await fetch(`/api/academic?type=${type}`);
+      const res = await fetch(`/api/academic?type=${type}`, {
+        cache: "no-store",
+      });
       const data = await res.json();
-      setUploadedFiles(data);
+      setUploadedFiles(Array.isArray(data) ? data : []);
     } catch (err) {
-      MySwal.fire("Error", "Failed to load files", "error");
+      console.error(err);
+      setUploadedFiles([]);
+    } finally {
+      setLoadingList(false);
     }
   };
 
   useEffect(() => {
-    fetchFiles();
+    loadUploadedFiles();
   }, [type]);
 
-  /* ================= UPLOAD ================= */
+  // ================= UPLOAD =================
   const handleUpload = async (e) => {
     e.preventDefault();
 
-    if (!title || !subject || !year || !semester || !file) {
-      return MySwal.fire("Error", "All fields are required", "error");
+    if (!file || !subject) {
+      alert("Subject & file required");
+      return;
     }
 
     setLoading(true);
-
     const reader = new FileReader();
+
     reader.onload = async () => {
       try {
         const res = await fetch("/api/academic", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title,
+            title: `${type.toUpperCase()} FILE`,
             subject,
             type,
             year,
@@ -58,42 +72,26 @@ export default function AdminAcademicUpload({ type }) {
         });
 
         const data = await res.json();
-        setLoading(false);
+        if (!res.ok) throw new Error(data.error || "Upload failed");
 
-        if (!res.ok) {
-          return MySwal.fire("Error", data.error || "Upload failed", "error");
-        }
-
-        MySwal.fire("Success", "File uploaded successfully", "success");
-
-        setTitle("");
-        setSubject("");
-        setYear("");
-        setSemester("");
+        alert("✅ Uploaded successfully");
         setFile(null);
-
-        fetchFiles();
+        setSubject("");
+        loadUploadedFiles();
       } catch (err) {
+        alert("❌ Upload failed");
+        console.error(err);
+      } finally {
         setLoading(false);
-        MySwal.fire("Error", "Upload failed", "error");
       }
     };
 
     reader.readAsDataURL(file);
   };
 
-  /* ================= DELETE ================= */
+  // ================= DELETE =================
   const handleDelete = async (id) => {
-    const confirm = await MySwal.fire({
-      title: "Are you sure?",
-      text: "This file will be deleted permanently!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Delete",
-    });
-
-    if (!confirm.isConfirmed) return;
+    if (!confirm("Are you sure to delete this file?")) return;
 
     try {
       const res = await fetch("/api/academic", {
@@ -103,156 +101,128 @@ export default function AdminAcademicUpload({ type }) {
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Delete failed");
 
-      if (!res.ok) {
-        return MySwal.fire("Error", data.error || "Delete failed", "error");
-      }
-
-      MySwal.fire("Deleted", "File removed successfully", "success");
-      setUploadedFiles((prev) => prev.filter((f) => f._id !== id));
-    } catch {
-      MySwal.fire("Error", "Delete failed", "error");
+      alert("🗑 Deleted");
+      loadUploadedFiles();
+    } catch (err) {
+      alert("❌ Delete failed");
+      console.error(err);
     }
   };
 
-  /* ================= UI ================= */
   return (
-    <div className="space-y-8 px-4 max-w-6xl mx-auto">
+    <div className="max-w-5xl mx-auto p-6 space-y-10">
       {/* ================= UPLOAD FORM ================= */}
-      <form
-        onSubmit={handleUpload}
-        className="bg-white shadow rounded p-6 space-y-4 max-w-xl mx-auto"
-      >
-        <h2 className="text-xl font-bold text-blue-700 text-center">
-          Upload {type.toUpperCase()}
-        </h2>
+      <div className="bg-white p-6 rounded shadow">
+        <h1 className="text-2xl font-bold mb-6">📤 Academic Upload</h1>
 
-        <input
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="border p-2 w-full rounded"
-        />
+        <form onSubmit={handleUpload} className="space-y-4">
+          {/* TYPE */}
+          <select
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value);
+              setSubject("");
+            }}
+            className="border p-2 w-full rounded"
+          >
+            <option value="note">Notes</option>
+            <option value="book">Books</option>
+            <option value="routine">Routine</option>
+          </select>
 
-        <input
-          placeholder="Subject"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          className="border p-2 w-full rounded"
-        />
-
-        <div className="flex gap-3">
+          {/* YEAR */}
           <select
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            className="border p-2 w-1/2 rounded"
+            className="border p-2 w-full rounded"
           >
-            <option value="">Year</option>
-            <option value="1st">1st</option>
-            <option value="2nd">2nd</option>
-            <option value="3rd">3rd</option>
-            <option value="4th">4th</option>
+            <option value="1st">1st Year</option>
+            <option value="2nd">2nd Year</option>
+            <option value="3rd">3rd Year</option>
+            <option value="4th">4th Year</option>
           </select>
 
+          {/* SEMESTER */}
           <select
             value={semester}
             onChange={(e) => setSemester(e.target.value)}
-            className="border p-2 w-1/2 rounded"
+            className="border p-2 w-full rounded"
           >
-            <option value="">Semester</option>
-            <option value="1st">1st</option>
-            <option value="2nd">2nd</option>
+            <option value="1st">1st Semester</option>
+            <option value="2nd">2nd Semester</option>
           </select>
-        </div>
 
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="border p-2 w-full rounded"
-        />
+          {/* SUBJECT */}
+          <input
+            type="text"
+            placeholder="Subject / Title"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="border p-2 w-full rounded"
+          />
 
-        <button
-          disabled={loading}
-          className="bg-blue-600 text-white py-2 rounded w-full hover:bg-blue-700"
-        >
-          {loading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
+          {/* FILE */}
+          <input
+            type="file"
+            accept=".pdf"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="w-full"
+          />
 
-      {/* ================= DESKTOP TABLE ================= */}
-      <div className="hidden md:block">
-        <table className="w-full bg-white shadow rounded overflow-hidden">
-          <thead className="bg-blue-600 text-white">
-            <tr>
-              <th className="p-3 text-left">Title</th>
-              <th className="p-3">Subject</th>
-              <th className="p-3">Year</th>
-              <th className="p-3">Semester</th>
-              <th className="p-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {uploadedFiles.length === 0 && (
-              <tr>
-                <td colSpan="5" className="text-center p-4 text-gray-500">
-                  No files uploaded
-                </td>
-              </tr>
-            )}
+          <button
+            disabled={loading}
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+          >
+            {loading ? "Uploading..." : "Upload"}
+          </button>
+        </form>
+      </div>
 
-            {uploadedFiles.map((file) => (
-              <tr key={file._id} className="border-b hover:bg-gray-50">
-                <td className="p-3">{file.title}</td>
-                <td className="p-3 text-center">{file.subject}</td>
-                <td className="p-3 text-center">{file.year}</td>
-                <td className="p-3 text-center">{file.semester}</td>
-                <td className="p-3 flex gap-2 justify-center">
-   <a
-  href={`/api/academic/download/${file._id}`}
-  className="bg-green-600 text-white px-3 py-1 rounded"
->
-  Download
-</a>
+      {/* ================= UPLOADED LIST ================= */}
+      <div className="bg-white p-6 rounded shadow">
+        <h2 className="text-xl font-bold mb-4">
+          📂 Uploaded {type.charAt(0).toUpperCase() + type.slice(1)}
+        </h2>
 
+        {loadingList ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : uploadedFiles.length === 0 ? (
+          <p className="text-gray-500">No files uploaded yet</p>
+        ) : (
+          <div className="space-y-3">
+            {uploadedFiles.map((f) => (
+              <div
+                key={f._id}
+                className="flex items-center justify-between border p-3 rounded"
+              >
+                <div>
+                  <p className="font-semibold">{f.subject}</p>
+                  <p className="text-xs text-gray-500">
+                    {f.year} Year · {f.semester} Semester
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <a
+                    href={f.fileUrl}
+                    target="_blank"
+                    className="text-blue-600 text-sm"
+                  >
+                    View
+                  </a>
                   <button
-                    onClick={() => handleDelete(file._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    onClick={() => handleDelete(f._id)}
+                    className="text-red-600 text-sm"
                   >
                     Delete
                   </button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* ================= MOBILE CARDS ================= */}
-      <div className="md:hidden space-y-4">
-        {uploadedFiles.map((file) => (
-          <div key={file._id} className="bg-white shadow rounded p-4 space-y-2">
-            <p><b>Title:</b> {file.title}</p>
-            <p><b>Subject:</b> {file.subject}</p>
-            <p><b>Year:</b> {file.year}</p>
-            <p><b>Semester:</b> {file.semester}</p>
-
-            <div className="flex gap-2 pt-2">
-              <a
-  href={`/api/academic/download/${file._id}`}
-  className="bg-green-600 text-white px-3 py-1 rounded"
->
-  Download
-</a>
-
-              <button
-                onClick={() => handleDelete(file._id)}
-                className="bg-red-500 text-white flex-1 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

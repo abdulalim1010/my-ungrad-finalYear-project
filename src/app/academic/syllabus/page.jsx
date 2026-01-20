@@ -1,166 +1,153 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { FileText, Download, Eye, Filter, BookOpen, Calendar } from "lucide-react";
+import { useMemo, useState } from "react";
+import syllabusData from "@/data/syllabus.json";
+import {
+  FileText,
+  Download,
+  Filter,
+  BookOpen,
+  Calendar,
+} from "lucide-react";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
 
 export default function SyllabusPage() {
-  const [files, setFiles] = useState([]);
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  const fetchSyllabi = useCallback(async () => {
-    setLoading(true);
-    try {
-      let url = "/api/academic?type=syllabus";
-      if (year) url += `&year=${year.toLowerCase()}`;
-      if (semester) url += `&semester=${semester.toLowerCase()}`;
+  // ================= FILTER LOGIC =================
+  const filteredSyllabus = useMemo(() => {
+    return syllabusData.filter((item) => {
+      const semesterMatch = semester
+        ? String(item.semester) ===
+          semester.replace("st", "").replace("nd", "").replace("rd", "")
+        : true;
 
-      const res = await fetch(url, { cache: "no-store" });
-      const data = await res.json();
-      const syllabi = Array.isArray(data)
-        ? data.filter((f) => f.type.toLowerCase() === "syllabus")
-        : [];
-      setFiles(syllabi);
-    } catch (err) {
-      console.error("Fetch syllabi error:", err);
-      setFiles([]);
-    } finally {
-      setLoading(false);
-    }
+      const yearMatch = year
+        ? Math.ceil(item.semester / 2) ===
+          Number(year.replace("st", "").replace("nd", "").replace("rd", ""))
+        : true;
+
+      return semesterMatch && yearMatch;
+    });
   }, [year, semester]);
 
-  useEffect(() => {
-    fetchSyllabi();
-  }, [fetchSyllabi]);
+  // ================= DOWNLOAD JSON =================
+  const downloadJSON = (data, filename) => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
+        {/* ================= HEADER ================= */}
+        <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-600 rounded-full mb-4">
-            <FileText className="text-white" size={32} />
+            <FileText className="text-white" size={30} />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Course Syllabus
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Access detailed course syllabi and curriculum information
+          <p className="text-gray-600">
+            Official syllabus (JSON based, always available)
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <Filter className="text-orange-600" size={20} />
-            <h2 className="text-lg font-semibold text-gray-800">Filter Syllabus</h2>
+        {/* ================= FILTER ================= */}
+        <div className="bg-white p-6 rounded-xl shadow mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter size={18} className="text-orange-600" />
+            <h2 className="font-semibold text-gray-800">Filter</h2>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                <Calendar size={16} className="inline mr-1" />
-                Year
-              </label>
-              <select
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              >
-                <option value="">All Years</option>
-                {YEARS.map((y) => (
-                  <option key={y} value={y}>
-                    {y} Year
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                <BookOpen size={16} className="inline mr-1" />
-                Semester
-              </label>
-              <select
-                value={semester}
-                onChange={(e) => setSemester(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              >
-                <option value="">All Semesters</option>
-                {SEMESTERS.map((s) => (
-                  <option key={s} value={s}>
-                    {s} Semester
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className="border px-4 py-3 rounded-lg"
+            >
+              <option value="">All Years</option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {y} Year
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+              className="border px-4 py-3 rounded-lg"
+            >
+              <option value="">All Semesters</option>
+              {SEMESTERS.map((s) => (
+                <option key={s} value={s}>
+                  {s} Semester
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Syllabi List */}
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
-          </div>
-        ) : files.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-            <FileText className="text-gray-400 mx-auto mb-4" size={48} />
-            <p className="text-gray-600 text-lg">No syllabus found</p>
-            <p className="text-gray-500 text-sm mt-2">
-              {year || semester
-                ? "Try adjusting your filters"
-                : "Syllabi will appear here when uploaded"}
-            </p>
+        {/* ================= CONTENT ================= */}
+        {filteredSyllabus.length === 0 ? (
+          <div className="bg-white p-12 rounded-xl shadow text-center">
+            <FileText size={48} className="mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600">No syllabus found</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {files.map((f) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredSyllabus.map((s) => (
               <div
-                key={f._id}
-                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-100"
+                key={s.id}
+                className="bg-white rounded-xl shadow hover:shadow-lg transition p-6 flex flex-col"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <FileText className="text-orange-600" size={20} />
-                    <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                      SYLLABUS
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    {f.year} Year
+                <div className="flex justify-between mb-3">
+                  <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">
+                    Semester {s.semester}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {s.credits} Credits
                   </span>
                 </div>
 
-                <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
-                  {f.title}
+                <h3 className="font-semibold text-gray-800 mb-1">
+                  {s.course_title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-1">
-                  <span className="font-medium">{f.subject}</span>
-                </p>
-                <p className="text-xs text-gray-500 mb-4">
-                  {f.semester} Semester
+
+                <p className="text-sm text-gray-600 mb-2">
+                  <BookOpen size={14} className="inline mr-1" />
+                  {s.course_code}
                 </p>
 
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-                  <a
-                    href={f.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
-                  >
-                    <Eye size={16} />
-                    View PDF
-                  </a>
-                  <a
-                    href={f.fileUrl}
-                    download={f.fileName || `${f.subject}_syllabus.pdf`}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition text-sm font-medium"
+                <p className="text-xs text-gray-500 mb-4">
+                  Contact Hours: {s.contact_hours}
+                </p>
+
+                {/* ACTION */}
+                <div className="mt-auto">
+                  <button
+                    onClick={() =>
+                      downloadJSON(
+                        s,
+                        `${s.course_code.replace(" ", "_")}_syllabus.json`
+                      )
+                    }
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 text-sm"
                   >
                     <Download size={16} />
-                    Download
-                  </a>
+                    Download JSON
+                  </button>
                 </div>
               </div>
             ))}

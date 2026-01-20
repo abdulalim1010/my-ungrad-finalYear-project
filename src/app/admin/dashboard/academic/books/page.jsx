@@ -1,5 +1,6 @@
 import AdminAcademicUpload from "../../components/AdminAcademicUpload";
 
+
 export default function BooksUploadPage() {
   return (
     <>
