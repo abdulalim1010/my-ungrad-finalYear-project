@@ -1,18 +1,33 @@
+import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
+import syllabusData from "@/data/syllabus.json";
 import { ObjectId } from "mongodb";
 
+// 🔥 IMPORTANT: build / vercel safe
+export const dynamic = "force-dynamic";
+
 /* =========================
-        GET (Fetch files)
+        GET (FETCH)
+   syllabus → JSON
+   others   → MongoDB
 ========================= */
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const query = {};
+    const type = searchParams.get("type");
 
-    if (searchParams.get("type")) query.type = searchParams.get("type");
+    /* ===== SYLLABUS (JSON ONLY) ===== */
+    if (type === "syllabus") {
+      return NextResponse.json(syllabusData);
+    }
+
+    /* ===== NOTES / BOOKS / ROUTINE (DB) ===== */
+    const query = {};
+    if (type) query.type = type;
     if (searchParams.get("year")) query.year = searchParams.get("year");
-    if (searchParams.get("semester")) query.semester = searchParams.get("semester");
+    if (searchParams.get("semester"))
+      query.semester = searchParams.get("semester");
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "departmentDB");
@@ -23,15 +38,16 @@ export async function GET(req) {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return Response.json(files);
+    return NextResponse.json(files);
   } catch (error) {
     console.error("ACADEMIC GET ERROR:", error);
-    return Response.json({ error: "Failed to fetch files" }, { status: 500 });
+    return NextResponse.json([], { status: 500 });
   }
 }
 
 /* =========================
         POST (UPLOAD)
+   ❌ syllabus upload blocked
 ========================= */
 export async function POST(req) {
   try {
@@ -45,11 +61,19 @@ export async function POST(req) {
       fileName,
     } = await req.json();
 
-    if (!title || !subject || !type || !year || !semester || !fileBase64) {
-      return Response.json({ error: "Missing fields" }, { status: 400 });
+    // ❌ syllabus admin upload allowed না
+    if (type === "syllabus") {
+      return NextResponse.json(
+        { error: "Syllabus is JSON based only" },
+        { status: 400 }
+      );
     }
 
-    // 🔥 Upload to Cloudinary as RAW (original format)
+    if (!title || !subject || !type || !year || !semester || !fileBase64) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    /* ===== Cloudinary RAW Upload ===== */
     const uploadResult = await cloudinary.uploader.upload(fileBase64, {
       folder: "academic-files",
       resource_type: "raw",
@@ -60,7 +84,6 @@ export async function POST(req) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
-    // ✅ Original file download link
     const downloadUrl =
       uploadResult.secure_url +
       `?dl=1&filename=${encodeURIComponent(fileName)}`;
@@ -68,7 +91,7 @@ export async function POST(req) {
     await db.collection("academic").insertOne({
       title,
       subject,
-      type,
+      type, // note | book | routine
       year,
       semester,
       fileUrl: uploadResult.secure_url,
@@ -79,13 +102,13 @@ export async function POST(req) {
       createdAt: new Date(),
     });
 
-    return Response.json(
+    return NextResponse.json(
       { ok: true, message: "File uploaded successfully" },
       { status: 201 }
     );
   } catch (error) {
     console.error("ACADEMIC POST ERROR:", error);
-    return Response.json(
+    return NextResponse.json(
       { error: error.message || "Upload failed" },
       { status: 500 }
     );
@@ -94,11 +117,22 @@ export async function POST(req) {
 
 /* =========================
         DELETE
+   ❌ syllabus delete blocked
 ========================= */
 export async function DELETE(req) {
   try {
-    const { id } = await req.json();
-    if (!id) return Response.json({ error: "ID required" }, { status: 400 });
+    const { id, type } = await req.json();
+
+    if (type === "syllabus") {
+      return NextResponse.json(
+        { error: "Syllabus cannot be deleted" },
+        { status: 400 }
+      );
+    }
+
+    if (!id) {
+      return NextResponse.json({ error: "ID required" }, { status: 400 });
+    }
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "departmentDB");
@@ -108,10 +142,9 @@ export async function DELETE(req) {
       .findOne({ _id: new ObjectId(id) });
 
     if (!file) {
-      return Response.json({ error: "File not found" }, { status: 404 });
+      return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
-    // Delete from Cloudinary
     if (file.publicId) {
       await cloudinary.uploader.destroy(file.publicId, {
         resource_type: "raw",
@@ -122,10 +155,10 @@ export async function DELETE(req) {
       _id: new ObjectId(id),
     });
 
-    return Response.json({ ok: true, message: "File deleted successfully" });
+    return NextResponse.json({ ok: true, message: "File deleted successfully" });
   } catch (error) {
     console.error("ACADEMIC DELETE ERROR:", error);
-    return Response.json(
+    return NextResponse.json(
       { error: error.message || "Delete failed" },
       { status: 500 }
     );
