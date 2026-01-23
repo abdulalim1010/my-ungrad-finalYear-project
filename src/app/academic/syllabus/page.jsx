@@ -1,41 +1,45 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import syllabusData from "@/data/syllabus.json";
-import { FileText, Filter, BookOpen } from "lucide-react";
-import { generateSemesterSyllabusPDF } from "@/utils/syllabusPdf";
+import { useEffect, useMemo, useState } from "react";
+import { FileText, Filter, Download } from "lucide-react";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
 
 export default function SyllabusPage() {
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
 
-  // =============== NORMALIZE + FILTER =================
-  const filteredData = useMemo(() => {
-    let result = [];
-
-    syllabusData.years.forEach((y) => {
-      const yearNumber = y.year.split(" ")[0]; // "1st"
-
-      if (year && year !== yearNumber) return;
-
-      y.semesters.forEach((s) => {
-        const semesterNumber = s.semester.split(" ")[0]; // "1st"
-
-        if (semester && semester !== semesterNumber) return;
-
-        result.push({
-          year: y.year,
-          semester: s.semester,
-          subjects: s.subjects,
+  /* ================= FETCH SYLLABUS FILES ================= */
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch("/api/academic?type=syllabus", {
+          cache: "no-store",
         });
-      });
-    });
+        const data = await res.json();
+        setFiles(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
+        setFiles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
-    return result;
-  }, [year, semester]);
+  /* ================= FILTER ================= */
+  const filteredFiles = useMemo(() => {
+    return files.filter((f) => {
+      if (year && f.year !== year) return false;
+      if (semester && f.semester !== semester) return false;
+      return true;
+    });
+  }, [files, year, semester]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 py-12 px-4">
@@ -46,14 +50,13 @@ export default function SyllabusPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-600 rounded-full mb-4">
             <FileText className="text-white" size={30} />
           </div>
-           <h1 className="text-5xl font-bold text-blue-800 mb-8">
-            {syllabusData.university}
-          </h1>
+
           <h1 className="text-3xl font-bold text-gray-800">
-            {syllabusData.program}
+            Course Syllabus
           </h1>
-         
-          <p className="text-gray-600">{syllabusData.duration}</p>
+          <p className="text-gray-600 mt-2">
+            Download official syllabus (PDF / DOCX)
+          </p>
         </div>
 
         {/* ===== FILTER ===== */}
@@ -71,7 +74,9 @@ export default function SyllabusPage() {
             >
               <option value="">All Years</option>
               {YEARS.map((y) => (
-                <option key={y} value={y}>{y} Year</option>
+                <option key={y} value={y}>
+                  {y} Year
+                </option>
               ))}
             </select>
 
@@ -82,92 +87,59 @@ export default function SyllabusPage() {
             >
               <option value="">All Semesters</option>
               {SEMESTERS.map((s) => (
-                <option key={s} value={s}>{s} Semester</option>
+                <option key={s} value={s}>
+                  {s} Semester
+                </option>
               ))}
             </select>
           </div>
         </div>
 
         {/* ===== CONTENT ===== */}
-{filteredData.length === 0 ? (
-  <div className="bg-white p-12 rounded-2xl shadow text-center">
-    <FileText size={48} className="mx-auto text-gray-400 mb-4" />
-    <p className="text-gray-600 text-lg">No syllabus found</p>
-  </div>
-) : (
-  <div className="space-y-10">
-    {filteredData.map((item, i) => (
-      <div
-        key={i}
-        className="bg-white rounded-2xl shadow-md overflow-hidden"
-      >
-        {/* ===== CARD HEADER ===== */}
-        <div className="px-6 py-4 border-b bg-gray-50 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800">
-              {item.year}
-            </h2>
-            <p className="text-sm text-gray-600">
-              {item.semester}
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : filteredFiles.length === 0 ? (
+          <div className="bg-white p-12 rounded-2xl shadow text-center">
+            <FileText size={48} className="mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-600 text-lg">
+              No syllabus found
             </p>
           </div>
-
-          <span className="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full w-fit">
-            Total Subjects: {item.subjects.length}
-          </span>
-        </div>
-
-        {/* ===== SUBJECT LIST ===== */}
-        <div className="px-6 py-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {item.subjects.map((sub, idx) => (
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredFiles.map((f) => (
               <div
-                key={idx}
-                className="border rounded-xl p-4 hover:shadow transition"
+                key={f._id}
+                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
               >
-                <p className="font-semibold text-gray-800 mb-1">
-                  {sub.title}
-                </p>
+                <div className="p-6">
+                  <h3 className="font-semibold text-gray-800 mb-1">
+                    {f.subject}
+                  </h3>
 
-                <p className="text-sm text-gray-600 mb-1">
-                  <BookOpen size={14} className="inline mr-1" />
-                  {sub.code}
-                </p>
+                  <p className="text-sm text-gray-500 mb-3">
+                    {f.year} Year · {f.semester} Semester
+                  </p>
 
-                <p className="text-xs text-gray-500">
-                  Credits: {sub.credits} | Contact Hours:{" "}
-                  {sub.contact_hours || "—"}
-                </p>
+                  <span className="inline-block text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full mb-4">
+                    {f.format?.toUpperCase()}
+                  </span>
+
+                  <a
+                    href={f.downloadUrl || f.fileUrl}
+                    className="flex items-center justify-center gap-2
+                               bg-orange-600 text-white
+                               px-4 py-2 rounded-lg
+                               hover:bg-orange-700 transition text-sm"
+                  >
+                    <Download size={16} />
+                    Download
+                  </a>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* ===== CARD FOOTER (DOWNLOAD BUTTON) ===== */}
-        <div className="px-6 py-4 border-t bg-gray-50 flex justify-end">
-          <button
-            onClick={() => {
-              const pdf = generateSemesterSyllabusPDF({
-                program: syllabusData.program,
-                year: item.year,
-                semester: item.semester,
-                subjects: item.subjects,
-              });
-              pdf.save(`${item.year}_${item.semester}_Syllabus.pdf`);
-            }}
-            className="flex items-center gap-2 px-6 py-2.5
-                       bg-orange-600 text-white rounded-lg
-                       hover:bg-orange-700 transition text-sm font-medium"
-          >
-            Download PDF
-          </button>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-
+        )}
       </div>
     </div>
   );

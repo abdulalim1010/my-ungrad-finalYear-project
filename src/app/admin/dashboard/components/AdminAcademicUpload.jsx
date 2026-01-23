@@ -14,7 +14,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
 
-  // ================= FETCH FILES =================
+  /* ================= FETCH FILES ================= */
   const loadUploadedFiles = async () => {
     setLoadingList(true);
     try {
@@ -35,12 +35,23 @@ export default function AdminAcademicUpload({ type: fixedType }) {
     loadUploadedFiles();
   }, [type]);
 
-  // ================= UPLOAD =================
+  /* ================= UPLOAD ================= */
   const handleUpload = async (e) => {
     e.preventDefault();
 
     if (!file || !subject) {
       alert("Subject & file required");
+      return;
+    }
+
+    // ✅ Allow only PDF & DOCX
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("❌ Only PDF or DOCX files are allowed");
       return;
     }
 
@@ -81,7 +92,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
     reader.readAsDataURL(file);
   };
 
-  // ================= DELETE =================
+  /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     if (!confirm("Are you sure?")) return;
 
@@ -96,6 +107,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-10">
+      {/* ================= UPLOAD FORM ================= */}
       <div className="bg-white p-6 rounded shadow">
         <h1 className="text-2xl font-bold mb-6">📤 Academic Upload</h1>
 
@@ -140,11 +152,17 @@ export default function AdminAcademicUpload({ type: fixedType }) {
             className="border p-2 w-full rounded"
           />
 
+          {/* ✅ PDF + DOCX */}
           <input
             type="file"
-            accept=".pdf"
+            accept=".pdf,.docx"
             onChange={(e) => setFile(e.target.files[0])}
+            className="w-full"
           />
+
+          <p className="text-xs text-gray-500">
+            Allowed file types: <b>PDF, DOCX</b>
+          </p>
 
           <button
             disabled={loading}
@@ -155,10 +173,13 @@ export default function AdminAcademicUpload({ type: fixedType }) {
         </form>
       </div>
 
+      {/* ================= FILE LIST ================= */}
       <div className="bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">📂 Uploaded Files</h2>
 
-        {uploadedFiles.length === 0 ? (
+        {loadingList ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : uploadedFiles.length === 0 ? (
           <p className="text-gray-500">No files yet</p>
         ) : (
           uploadedFiles.map((f) => (

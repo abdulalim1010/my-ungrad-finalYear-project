@@ -1,30 +1,20 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
-import syllabusData from "@/data/syllabus.json";
 import { ObjectId } from "mongodb";
 
-// 🔥 IMPORTANT: build / vercel safe
+// ✅ build / vercel safe
 export const dynamic = "force-dynamic";
 
 /* =========================
-        GET (FETCH)
-   syllabus → JSON
-   others   → MongoDB
+        GET (FETCH FILES)
 ========================= */
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const type = searchParams.get("type");
-
-    /* ===== SYLLABUS (JSON ONLY) ===== */
-    if (type === "syllabus") {
-      return NextResponse.json(syllabusData);
-    }
-
-    /* ===== NOTES / BOOKS / ROUTINE (DB) ===== */
     const query = {};
-    if (type) query.type = type;
+
+    if (searchParams.get("type")) query.type = searchParams.get("type");
     if (searchParams.get("year")) query.year = searchParams.get("year");
     if (searchParams.get("semester"))
       query.semester = searchParams.get("semester");
@@ -47,33 +37,28 @@ export async function GET(req) {
 
 /* =========================
         POST (UPLOAD)
-   ❌ syllabus upload blocked
+   syllabus / notes / books / routine
 ========================= */
 export async function POST(req) {
   try {
     const {
       title,
       subject,
-      type,
+      type, // syllabus | note | book | routine
       year,
       semester,
       fileBase64,
       fileName,
     } = await req.json();
 
-    // ❌ syllabus admin upload allowed না
-    if (type === "syllabus") {
+    if (!title || !subject || !type || !fileBase64 || !fileName) {
       return NextResponse.json(
-        { error: "Syllabus is JSON based only" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    if (!title || !subject || !type || !year || !semester || !fileBase64) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-    }
-
-    /* ===== Cloudinary RAW Upload ===== */
+    // 🔥 Upload original file (PDF / DOCX)
     const uploadResult = await cloudinary.uploader.upload(fileBase64, {
       folder: "academic-files",
       resource_type: "raw",
@@ -91,9 +76,9 @@ export async function POST(req) {
     await db.collection("academic").insertOne({
       title,
       subject,
-      type, // note | book | routine
-      year,
-      semester,
+      type,
+      year: year || null,
+      semester: semester || null,
       fileUrl: uploadResult.secure_url,
       downloadUrl,
       publicId: uploadResult.public_id,
@@ -116,19 +101,11 @@ export async function POST(req) {
 }
 
 /* =========================
-        DELETE
-   ❌ syllabus delete blocked
+        DELETE (ALL TYPES)
 ========================= */
 export async function DELETE(req) {
   try {
-    const { id, type } = await req.json();
-
-    if (type === "syllabus") {
-      return NextResponse.json(
-        { error: "Syllabus cannot be deleted" },
-        { status: 400 }
-      );
-    }
+    const { id } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
