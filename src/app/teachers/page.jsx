@@ -22,9 +22,9 @@ export default async function TeachersPage() {
         {/* HEADER CONTENT */}
         <div className="relative z-10 text-center px-6">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
-            Our Faculty Members
+             Faculty Members of EEE Department
           </h1>
-          <p className="text-gray-200 text-lg max-w-3xl mx-auto">
+          <p className="text-white font-bold text-lg max-w-3xl mx-auto">
             Dedicated, experienced and highly qualified faculty members of the
             Electrical & Electronic Engineering Department
           </p>

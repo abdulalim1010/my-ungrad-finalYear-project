@@ -60,8 +60,7 @@ export default async function TeacherDetail(props) {
           >
             ← Back
           </Link>
-          <h1 className="mt-8 text-5xl font-extrabold text-white drop-shadow-lg">{teacher.name}</h1>
-          <p className="text-2xl text-blue-100 mt-2">{teacher.designation}</p>
+          
         </FadeInWrapper>
       </div>
 
@@ -75,10 +74,15 @@ export default async function TeacherDetail(props) {
                 src={teacher.image}
                 alt={`${teacher.name} photo`}
                 className="w-full h-[450px] object-cover rounded-xl transition duration-700 scale-100 group-hover:scale-110"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900 via-blue-700/30 to-transparent rounded-b-xl p-5">
-                <span className="text-white font-bold text-lg">{teacher.department}</span>
+              />   
+              <div className="text-center mb-5"><h1 className="mt-8 text-3xl font-extrabold text-black drop-shadow-lg">{teacher.name}</h1>
+                <p className="text-2xl text-black mt-4">{teacher.designation}</p>
+              
+              <span className="text-shadow-blue-500 mt-4 mb-5  font-bold  text-lg">{teacher.department}</span>
               </div>
+              
+                
+             
             </div>
           </FadeInWrapper>
 
