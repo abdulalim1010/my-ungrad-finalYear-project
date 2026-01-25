@@ -6,11 +6,10 @@ export default function AdminAcademicUpload({ type: fixedType }) {
   const [type, setType] = useState(fixedType || "note");
   const [year, setYear] = useState("1st");
   const [semester, setSemester] = useState("1st");
-
   const [subject, setSubject] = useState("");
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
 
+  const [loading, setLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
 
@@ -44,52 +43,44 @@ export default function AdminAcademicUpload({ type: fixedType }) {
       return;
     }
 
-    // ✅ Allow only PDF & DOCX
     const allowedTypes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("❌ Only PDF or DOCX files are allowed");
+      alert("❌ Only PDF or DOCX allowed");
       return;
     }
 
     setLoading(true);
-    const reader = new FileReader();
 
-    reader.onload = async () => {
-      try {
-        const res = await fetch("/api/academic", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: `${type.toUpperCase()} FILE`,
-            subject,
-            type,
-            year,
-            semester,
-            fileBase64: reader.result,
-            fileName: file.name,
-          }),
-        });
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("subject", subject);
+      formData.append("type", type);
+      formData.append("year", year);
+      formData.append("semester", semester);
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Upload failed");
+      const res = await fetch("/api/academic", {
+        method: "POST",
+        body: formData, // ✅ multipart (Vercel safe)
+      });
 
-        alert("✅ Uploaded successfully");
-        setFile(null);
-        setSubject("");
-        loadUploadedFiles();
-      } catch (err) {
-        alert("❌ Upload failed");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
 
-    reader.readAsDataURL(file);
+      alert("✅ Uploaded successfully");
+      setFile(null);
+      setSubject("");
+      loadUploadedFiles();
+    } catch (err) {
+      console.error(err);
+      alert("❌ Upload failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   /* ================= DELETE ================= */
@@ -107,7 +98,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-10">
-      {/* ================= UPLOAD FORM ================= */}
+      {/* Upload */}
       <div className="bg-white p-6 rounded shadow">
         <h1 className="text-2xl font-bold mb-6">📤 Academic Upload</h1>
 
@@ -152,17 +143,11 @@ export default function AdminAcademicUpload({ type: fixedType }) {
             className="border p-2 w-full rounded"
           />
 
-          {/* ✅ PDF + DOCX */}
           <input
             type="file"
             accept=".pdf,.docx"
             onChange={(e) => setFile(e.target.files[0])}
-            className="w-full"
           />
-
-          <p className="text-xs text-gray-500">
-            Allowed file types: <b>PDF, DOCX</b>
-          </p>
 
           <button
             disabled={loading}
@@ -173,14 +158,14 @@ export default function AdminAcademicUpload({ type: fixedType }) {
         </form>
       </div>
 
-      {/* ================= FILE LIST ================= */}
+      {/* List */}
       <div className="bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">📂 Uploaded Files</h2>
 
         {loadingList ? (
-          <p className="text-gray-500">Loading...</p>
+          <p>Loading...</p>
         ) : uploadedFiles.length === 0 ? (
-          <p className="text-gray-500">No files yet</p>
+          <p>No files yet</p>
         ) : (
           uploadedFiles.map((f) => (
             <div
@@ -193,12 +178,21 @@ export default function AdminAcademicUpload({ type: fixedType }) {
                   {f.year} Year · {f.semester} Semester
                 </p>
               </div>
-              <button
-                onClick={() => handleDelete(f._id)}
-                className="text-red-600 text-sm"
-              >
-                Delete
-              </button>
+
+              <div className="flex gap-3">
+                <a
+                  href={f.downloadUrl}
+                  className="text-blue-600 text-sm"
+                >
+                  Download
+                </a>
+                <button
+                  onClick={() => handleDelete(f._id)}
+                  className="text-red-600 text-sm"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))
         )}

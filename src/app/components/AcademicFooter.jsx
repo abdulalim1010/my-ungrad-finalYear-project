@@ -47,7 +47,7 @@ export default function AcademicFooter() {
             +880 1234-567890
           </p>
           <p className="text-gray-600">
-            <span className="font-semibold text-gray-700">Address:</span>  
+            <span calassName="font-semibold text-gray-700">Address:</span>  
             University Campus, BRUR, Bangladesh
           </p>
         </div>
