@@ -1,4 +1,8 @@
+import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+
+// 🔥 MUST — build / vercel safe
+export const dynamic = "force-dynamic";
 
 export async function GET(req) {
   try {
@@ -6,22 +10,43 @@ export async function GET(req) {
     const email = searchParams.get("email");
 
     if (!email) {
-      return new Response(JSON.stringify({ role: null, error: "Email missing" }), { status: 400 });
+      return NextResponse.json(
+        { role: null, error: "Email missing" },
+        { status: 400 }
+      );
+    }
+
+    // 🔥 ENV SAFETY (Vercel build crash prevent)
+    if (!process.env.MONGODB_URI) {
+      console.error("❌ MONGODB_URI missing");
+      return NextResponse.json(
+        { role: null, error: "Server config error" },
+        { status: 500 }
+      );
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const user = await db.collection("users").findOne({ email });
 
     if (!user) {
-      return new Response(JSON.stringify({ role: null, error: "User not found" }), { status: 404 });
+      return NextResponse.json(
+        { role: null, error: "User not found" },
+        { status: 404 }
+      );
     }
 
-    // ✅ Make sure role exists
-    return new Response(JSON.stringify({ role: user.role || null }), { status: 200 });
+    // ✅ SAFE RETURN
+    return NextResponse.json(
+      { role: user.role ?? null },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("API /admin/check error:", err);
-    return new Response(JSON.stringify({ role: null, error: "Server error" }), { status: 500 });
+    return NextResponse.json(
+      { role: null, error: "Server error" },
+      { status: 500 }
+    );
   }
 }
