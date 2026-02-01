@@ -1,181 +1,234 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import AddPassedStudentForm from "./components/AddPassedStudentForm";
 
 export default function AdminPassedStudentsPage() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [filter, setFilter] = useState("pending"); // pending, approved, all
 
-  /* =========================
-      FETCH PENDING STUDENTS
-  ========================== */
-  const fetchStudents = useCallback(async () => {
-    setLoading(true);
+  // Helper function to get valid image URL
+  const getImageUrl = (url) => {
+    if (!url) return "/logoo.png"; // Default fallback
     try {
-      const res = await fetch(
-        "/api/passed-students?status=pending",
-        { cache: "no-store" }
-      );
+      new URL(url);
+      return url;
+    } catch {
+      return "/logoo.png"; // Fallback if URL is invalid
+    }
+  };
 
+  async function loadStudents() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/passed-students?status=${filter}`, { 
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
-      setStudents(Array.isArray(data) ? data : []);
+      setStudents(data);
     } catch (err) {
-      console.error("Failed to fetch students", err);
-      setStudents([]);
+      console.error("Error loading students:", err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
   useEffect(() => {
-    fetchStudents();
-  }, [fetchStudents]);
+    loadStudents();
+  }, [filter]);
 
-  /* =========================
-        APPROVE STUDENT
-  ========================== */
-  async function handleApprove(id) {
-    const result = await Swal.fire({
-      title: "Approve Student?",
-      text: "This student will be visible on the website",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#16a34a",
-      cancelButtonColor: "#dc2626",
-      confirmButtonText: "Yes, Approve",
-    });
-
-    if (!result.isConfirmed) return;
-
+  async function updateStatus(id, status) {
     try {
-      await fetch("/api/passed-students", {
+      const res = await fetch("/api/passed-students", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: "approved" }),
+        body: JSON.stringify({ id, status }),
       });
 
-      Swal.fire("Approved!", "Student is now live 🎉", "success");
-      fetchStudents();
+      if (!res.ok) {
+        throw new Error("Failed to update status");
+      }
+
+      Swal.fire("Updated ✅", `Student ${status}`, "success");
+      loadStudents();
     } catch (err) {
-      Swal.fire("Error", "Approval failed", "error");
+      Swal.fire("Error ❌", err.message, "error");
     }
   }
 
-  /* =========================
-        REJECT STUDENT
-  ========================== */
-  async function handleReject(id) {
-    const result = await Swal.fire({
-      title: "Reject Student?",
-      text: "This action cannot be undone",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#dc2626",
-      cancelButtonColor: "#6b7280",
-      confirmButtonText: "Reject",
-    });
-
-    if (!result.isConfirmed) return;
-
+  async function deleteStudent(id) {
     try {
-      await fetch("/api/passed-students", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status: "rejected" }),
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This will permanently delete the alumni profile",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
       });
 
-      Swal.fire("Rejected!", "Student request removed ❌", "info");
-      fetchStudents();
+      if (result.isConfirmed) {
+        const res = await fetch("/api/passed-students", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to delete");
+        }
+
+        Swal.fire("Deleted ✅", "Alumni has been deleted", "success");
+        loadStudents();
+      }
     } catch (err) {
-      Swal.fire("Error", "Rejection failed", "error");
+      Swal.fire("Error ❌", err.message, "error");
     }
   }
 
-  /* =========================
-          LOADING
-  ========================== */
-  if (loading) {
-    return (
-      <div className="p-10 text-center text-gray-500 text-lg">
-        Loading passed students...
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="p-8 text-center">
+      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <p className="mt-2 text-gray-500">Loading...</p>
+    </div>
+  );
 
-  /* =========================
-            UI
-  ========================== */
+  if (error) return (
+    <div className="p-8 text-center">
+      <p className="text-red-600">Error: {error}</p>
+      <button 
+        onClick={loadStudents}
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg"
+      >
+        Retry
+      </button>
+    </div>
+  );
+
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">
-        🎓 Passed Students Approval
-      </h1>
+      {showAddForm && (
+        <AddPassedStudentForm
+          onClose={() => setShowAddForm(false)}
+          onSuccess={loadStudents}
+        />
+      )}
 
-      {students.length === 0 ? (
-        <p className="text-gray-500 text-lg">
-          No pending requests 🎉
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {students.map((student) => (
-            <div
-              key={student._id}
-              className="bg-white rounded-2xl shadow-lg p-6 border hover:shadow-xl transition"
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full overflow-hidden border">
-                  <Image
-                    src={student.photoUrl}
-                    alt={student.name}
-                    width={64}
-                    height={64}
-                    unoptimized
-                    className="object-cover w-full h-full"
-                  />
-                </div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Alumni Management</h1>
+        <button 
+          onClick={() => setShowAddForm(true)}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+          Add New Alumni
+        </button>
+      </div>
 
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    {student.name}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    Batch: {student.batch}
-                  </p>
-                </div>
-              </div>
+      {/* Filter Tabs */}
+      <div className="flex gap-2 mb-6">
+        {["pending", "approved", "all"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-4 py-2 rounded-lg capitalize transition ${
+              filter === f
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            {f === "all" ? "All Alumni" : `${f} Requests`}
+          </button>
+        ))}
+      </div>
 
-              <div className="space-y-1 text-sm text-gray-600">
-                <p>
-                  <span className="font-medium">Designation:</span>{" "}
-                  {student.designation || "—"}
-                </p>
-                <p>
-                  <span className="font-medium">Organization:</span>{" "}
-                  {student.company || "—"}
-                </p>
-              </div>
+      {filter === "pending" && students.length === 0 && (
+        <div className="text-center py-12 bg-gray-50 rounded-xl">
+          <p className="text-gray-500 text-lg">No pending requests 🎉</p>
+          <p className="text-gray-400 text-sm mt-2">All student requests have been processed</p>
+        </div>
+      )}
 
-              <div className="flex gap-3 mt-6">
+      {filter !== "pending" && students.length === 0 && (
+        <div className="text-center py-12 bg-gray-50 rounded-xl">
+          <p className="text-gray-500 text-lg">No alumni found</p>
+          <p className="text-gray-400 text-sm mt-2">Add alumni using the &quot;Add New Alumni&quot; button</p>
+        </div>
+      )}
+
+      <div className="grid md:grid-cols-3 gap-6">
+        {students.map((s) => (
+          <div key={s._id} className="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="flex justify-center">
+              <Image 
+                src={getImageUrl(s.imageUrl || s.photoUrl)} 
+                width={100} 
+                height={100} 
+                alt={s.name} 
+                className="rounded-full object-cover border-4 border-blue-100"
+                unoptimized
+              />
+            </div>
+            <h2 className="text-lg font-semibold text-center mt-3">{s.name}</h2>
+            <p className="text-center text-sm text-gray-500">Batch: {s.batch || "N/A"}</p>
+            
+            {s.designation && (
+              <p className="text-center text-sm text-blue-600 mt-1">{s.designation}</p>
+            )}
+            {s.company && (
+              <p className="text-center text-sm text-gray-500">@ {s.company}</p>
+            )}
+
+            <p className="text-center text-xs text-gray-400 mt-3">
+              Submitted: {new Date(s.createdAt).toLocaleDateString()}
+            </p>
+
+            {s.status === "pending" ? (
+              <div className="flex gap-2 mt-4">
                 <button
-                  onClick={() => handleApprove(student._id)}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl font-semibold transition"
+                  onClick={() => updateStatus(s._id, "approved")}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition font-medium"
                 >
                   Approve
                 </button>
-
                 <button
-                  onClick={() => handleReject(student._id)}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-semibold transition"
+                  onClick={() => updateStatus(s._id, "rejected")}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition font-medium"
                 >
                   Reject
                 </button>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ) : (
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => deleteStudent(s._id)}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition font-medium"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

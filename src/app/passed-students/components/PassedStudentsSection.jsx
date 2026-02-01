@@ -1,237 +1,122 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "";
-
-const gradients = [
-  "from-blue-600 to-indigo-700",
-  "from-purple-600 to-pink-600",
-  "from-emerald-600 to-teal-700",
-  "from-orange-500 to-red-600",
-  "from-rose-600 to-red-700",
-];
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function PassedStudentsSection() {
   const [students, setStudents] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
-  const [isHovering, setIsHovering] = useState(false);
-
-  // 🔍 Search states
-  const [searchName, setSearchName] = useState("");
-  const [searchBatch, setSearchBatch] = useState("");
+  const [activeStudent, setActiveStudent] = useState(null);
 
   useEffect(() => {
-    async function fetchStudents() {
-      try {
-        const res = await fetch(
-          `${baseURL}/api/passed-students?status=approved`
-        );
-        const data = await res.json();
-        setStudents(data);
-      } catch (err) {
-        console.error("Failed to fetch approved students", err);
-      }
-    }
-    fetchStudents();
+    fetch("/api/passed-students?status=approved")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setStudents(data);
+        } else {
+          setStudents([]);
+        }
+      });
   }, []);
 
-  // 🔎 Filter logic (Name + Batch only)
-  const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
-      const nameMatch = s.name
-        .toLowerCase()
-        .includes(searchName.toLowerCase());
-      const batchMatch = s.batch
-        .toLowerCase()
-        .includes(searchBatch.toLowerCase());
-
-      return nameMatch && batchMatch;
-    });
-  }, [students, searchName, searchBatch]);
-
-  const scrollStudents =
-    searchName || searchBatch
-      ? filteredStudents
-      : [...students, ...students];
-
-  const selectedStudent = students.find((s) => s._id === selectedId);
-
   return (
-    <section className="min-h-screen py-24 bg-gradient-to-b from-blue-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-950 dark:to-black overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-
-        {/* ===== HEADER ===== */}
-        <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white">
-            Passed Students
-            <span className="block text-blue-600 dark:text-blue-400 mt-2">
-              EEE Department, BRUR
-            </span>
+    <motion.section
+      initial={{ opacity: 0, x: 120 }}   // 👉 right → left
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="max-w-7xl mx-auto px-6 py-16"
+    >
+      {/* ================= HEADER ================= */}
+      <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+            Our Proud Passed Students 🎓
           </h2>
-
-          <p className="mt-6 max-w-2xl mx-auto text-gray-600 dark:text-gray-300 text-lg">
-            Celebrating the successful graduates of the Department of Electrical
-            and Electronic Engineering.
+          <p className="text-gray-600 mt-2">
+            Passed students of EEE Department
           </p>
-
-          <Link
-            href="/passed-students/submit"
-            className="inline-block mt-8 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg transition"
-          >
-            Add Your Name
-          </Link>
         </div>
 
-        {/* ===== SEARCH BAR ===== */}
-        <div className="mb-16 flex flex-col md:flex-row gap-4 justify-center">
-          <input
-            type="text"
-            placeholder="Search by Name"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            className="w-full md:w-72 px-5 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-
-          <input
-            type="text"
-            placeholder="Search by Batch (e.g. 2019)"
-            value={searchBatch}
-            onChange={(e) => setSearchBatch(e.target.value)}
-            className="w-full md:w-72 px-5 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
-
-        {/* ===== AUTO SCROLLING CARDS ===== */}
-        <div
-          className="relative"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+        {/* BUTTON */}
+        <Link
+          href="/passed-students/submit"
+          className="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
         >
-          <motion.div
-            className="flex gap-6 md:gap-8 w-max"
-            animate={{
-              x:
-                selectedId ||
-                isHovering ||
-                searchName ||
-                searchBatch
-                  ? 0
-                  : ["0%", "-50%"],
-            }}
-            transition={{
-              repeat:
-                selectedId ||
-                isHovering ||
-                searchName ||
-                searchBatch
-                  ? 0
-                  : Infinity,
-              duration: 35,
-              ease: "linear",
-            }}
-          >
-            {scrollStudents.map((s, idx) => {
-              const gradient = gradients[idx % gradients.length];
-
-              return (
-                <motion.div
-                  key={`${s._id}-${idx}`}
-                  onClick={() => setSelectedId(s._id)}
-                  whileHover={{ scale: 1.08 }}
-                  className={`
-                    min-w-[260px] md:min-w-[300px]
-                    h-[380px] md:h-[420px]
-                    rounded-3xl p-6
-                    text-white cursor-pointer
-                    shadow-2xl
-                    bg-gradient-to-br ${gradient}
-                  `}
-                >
-                  <Image
-                    src={s.photoUrl}
-                    width={140}
-                    height={140}
-                    alt={s.name}
-                    unoptimized
-                    className="w-[140px] h-[140px] rounded-full mx-auto border-4 border-white/80 object-cover shadow-xl"
-                  />
-
-                  <h3 className="text-xl md:text-2xl font-extrabold mt-6 text-center">
-                    {s.name}
-                  </h3>
-
-                  <p className="text-center text-sm mt-2 opacity-90">
-                    {s.batch}
-                  </p>
-
-                  <p className="text-center mt-3 font-semibold">
-                    {s.designation}
-                  </p>
-
-                  <p className="text-center text-sm mt-1 italic opacity-80">
-                    {s.company}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-
-        {/* ===== SELECTED MODAL ===== */}
-        <AnimatePresence>
-          {selectedStudent && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center z-[100]"
-              onClick={() => setSelectedId(null)}
-            >
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-3xl p-8 max-w-sm w-full text-white shadow-2xl relative"
-              >
-                <button
-                  onClick={() => setSelectedId(null)}
-                  className="absolute top-4 right-5 bg-white/30 hover:bg-white/60 rounded-full px-3 py-1 text-black"
-                >
-                  ✕
-                </button>
-
-                <Image
-                  src={selectedStudent.photoUrl}
-                  width={240}
-                  height={240}
-                  alt={selectedStudent.name}
-                  unoptimized
-                  className="w-[220px] h-[220px] rounded-full mx-auto border-4 border-white object-cover shadow-2xl"
-                />
-
-                <h3 className="text-3xl font-bold mt-8 text-center">
-                  {selectedStudent.name}
-                </h3>
-
-                <p className="text-center mt-3 text-lg">
-                  {selectedStudent.batch}
-                </p>
-
-                <p className="text-center mt-3 font-semibold">
-                  {selectedStudent.designation}
-                </p>
-
-                <p className="text-center mt-2 italic opacity-90">
-                  {selectedStudent.company}
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+          Submit Your Data →
+        </Link>
       </div>
-    </section>
+
+      {/* ================= GRID ================= */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {students.length === 0 && (
+          <p className="col-span-full text-center text-gray-500">
+            No passed students found
+          </p>
+        )}
+
+        {students.map((s, index) => (
+          <motion.div
+            key={s._id}
+            initial={{ opacity: 0, x: 80 }}   // 👉 card right → left
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
+            onClick={() => setActiveStudent(s)}
+            className="cursor-pointer bg-white rounded-3xl shadow-lg p-6 text-center hover:shadow-xl transition"
+          >
+            <Image
+              src={s.photoUrl}
+              width={140}
+              height={140}
+              alt={s.name}
+              className="mx-auto rounded-full object-cover"
+            />
+            <h3 className="mt-4 font-bold text-lg text-gray-800">
+              {s.name}
+            </h3>
+            <p className="text-sm text-blue-600">{s.designation}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* ================= MODAL ================= */}
+      <AnimatePresence>
+        {activeStudent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center"
+            onClick={() => setActiveStudent(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, x: 100 }}
+              animate={{ scale: 1, x: 0 }}
+              exit={{ scale: 0.8, x: 100 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white p-8 rounded-3xl max-w-sm w-full text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={activeStudent.photoUrl}
+                width={180}
+                height={180}
+                alt={activeStudent.name}
+                className="mx-auto rounded-full object-cover"
+              />
+              <h2 className="text-xl font-bold mt-4 text-gray-800">
+                {activeStudent.name}
+              </h2>
+              <p className="text-blue-600 mt-1">
+                {activeStudent.designation}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.section>
   );
 }

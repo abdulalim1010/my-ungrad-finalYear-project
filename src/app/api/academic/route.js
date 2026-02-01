@@ -44,28 +44,48 @@ export async function POST(req) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const originalFilename = file.name;
+    const fileExtension = originalFilename.split(".").pop().toLowerCase();
+
+    // Determine resource type based on file type
+    let resourceType = "raw";
+    if (["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(fileExtension)) {
+      resourceType = "image";
+    } else if (["pdf"].includes(fileExtension)) {
+      resourceType = "raw";
+    }
 
     const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          folder: "academic-files",
-          resource_type: "raw", // ✅ pdf/docx
-          use_filename: true,
-          unique_filename: false,
-        },
-        (err, result) => {
-          if (err) reject(err);
-          resolve(result);
-        }
-      ).end(buffer);
+      const uploadOptions = {
+        folder: "academic-files",
+        resource_type: resourceType,
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+        // Preserve original format
+        format: fileExtension,
+        // Add public_id with original name structure
+        public_id: `academic-${Date.now()}-${originalFilename.replace(/\.[^/.]+$/, "")}`,
+      };
+
+      cloudinary.uploader.upload_stream(uploadOptions, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      }).end(buffer);
     });
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
 
-    const downloadUrl =
-      uploadResult.secure_url +
-      `?dl=1&filename=${encodeURIComponent(file.name)}`;
+    // Create proper download URL that preserves the file
+    // For Cloudinary raw files, we use the upload result URL directly
+    let downloadUrl = uploadResult.secure_url;
+    
+    // If it's a raw file (PDF), ensure proper download behavior
+    if (resourceType === "raw") {
+      // Add download flag and original filename
+      downloadUrl = `${uploadResult.secure_url}?fl_attachment=${encodeURIComponent(originalFilename)}`;
+    }
 
     await db.collection("academic").insertOne({
       subject,
@@ -75,15 +95,20 @@ export async function POST(req) {
       fileUrl: uploadResult.secure_url,
       downloadUrl,
       publicId: uploadResult.public_id,
-      fileName: file.name,
+      fileName: originalFilename,
+      fileType: fileExtension,
       createdAt: new Date(),
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ 
+      ok: true, 
+      message: "File uploaded successfully",
+      fileName: originalFilename 
+    });
   } catch (err) {
-    console.error(err);
+    console.error("Academic file upload error:", err);
     return NextResponse.json(
-      { error: "Upload failed" },
+      { error: "Upload failed: " + err.message },
       { status: 500 }
     );
   }
@@ -101,9 +126,19 @@ export async function DELETE(req) {
     .findOne({ _id: new ObjectId(id) });
 
   if (file?.publicId) {
-    await cloudinary.uploader.destroy(file.publicId, {
-      resource_type: "raw",
-    });
+    // Determine resource type for deletion
+    let resourceType = "raw";
+    if (file.fileType && ["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(file.fileType)) {
+      resourceType = "image";
+    }
+
+    try {
+      await cloudinary.uploader.destroy(file.publicId, {
+        resource_type: resourceType,
+      });
+    } catch (deleteErr) {
+      console.error("Cloudinary delete error:", deleteErr);
+    }
   }
 
   await db.collection("academic").deleteOne({
