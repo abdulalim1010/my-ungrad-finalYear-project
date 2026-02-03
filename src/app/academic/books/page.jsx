@@ -16,7 +16,7 @@ export default function BooksPage() {
   const [semester, setSemester] = useState("");
 
   useEffect(() => {
-    fetch("/api/academic?type=book")
+    fetch("/api/academic?type=books")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
