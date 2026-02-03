@@ -126,11 +126,12 @@ export default function SyllabusPage() {
                   </span>
 
                   <a
-                    href={f.downloadUrl || f.fileUrl}
+                    href={`/api/academic/download/${f._id}`}
                     className="flex items-center justify-center gap-2
                                bg-orange-600 text-white
                                px-4 py-2 rounded-lg
                                hover:bg-orange-700 transition text-sm"
+                    download={f.fileName}
                   >
                     <Download size={16} />
                     Download

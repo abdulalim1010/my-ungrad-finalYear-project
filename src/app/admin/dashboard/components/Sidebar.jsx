@@ -59,6 +59,10 @@ const menu = [
       name: "Routine",
       href: "/admin/dashboard/academic/routine",
     },
+    {
+      name: "Previous Questions",
+      href: "/admin/dashboard/academic/previous-questions",
+    },
   ],
 },
   /* ================= RESEARCH ================= */

@@ -145,7 +145,7 @@ export default function ClassNotePage() {
 
                 <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
                   <a
-                    href={f.fileUrl}
+                    href={`/api/academic/download/${f._id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
@@ -154,7 +154,7 @@ export default function ClassNotePage() {
                     View PDF
                   </a>
                   <a
-                    href={f.fileUrl}
+                    href={`/api/academic/download/${f._id}`}
                     download={f.fileName || `${f.subject}_${f.type}.pdf`}
                     className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
                   >

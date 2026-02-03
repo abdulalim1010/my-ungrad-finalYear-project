@@ -1,65 +1,69 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { FileText, Filter, Download, Book } from "lucide-react";
+import { FileText, Filter, Download, ClipboardList } from "lucide-react";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
 
-// Dynamic export for SSR
 export const dynamic = "force-dynamic";
 
-export default function BooksPage() {
-  const [books, setBooks] = useState([]);
+export default function PreviousQuestionsPage() {
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [year, setYear] = useState("");
   const [semester, setSemester] = useState("");
 
+  /* ================= FETCH FILES ================= */
   useEffect(() => {
-    fetch("/api/academic?type=book")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setBooks(data);
-        } else {
-          setBooks([]);
-        }
-      })
-      .catch(() => setBooks([]))
-      .finally(() => setLoading(false));
+    const load = async () => {
+      try {
+        const res = await fetch("/api/academic?type=previous-question", {
+          cache: "no-store",
+        });
+        const data = await res.json();
+        setFiles(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
+        setFiles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
   }, []);
 
   /* ================= FILTER ================= */
-  const filteredBooks = useMemo(() => {
-    return books.filter((b) => {
-      if (year && b.year !== year) return false;
-      if (semester && b.semester !== semester) return false;
+  const filteredFiles = useMemo(() => {
+    return files.filter((f) => {
+      if (year && f.year !== year) return false;
+      if (semester && f.semester !== semester) return false;
       return true;
     });
-  }, [books, year, semester]);
+  }, [files, year, semester]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* ===== HEADER ===== */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
-            <Book className="text-white" size={30} />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-full mb-4">
+            <ClipboardList className="text-white" size={30} />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800">
-            Academic Books
+            Previous Questions
           </h1>
           <p className="text-gray-600 mt-2">
-            Download textbooks and reference materials
+            Download previous exam questions (DOCX format)
           </p>
         </div>
 
         {/* ===== FILTER ===== */}
         <div className="bg-white p-6 rounded-xl shadow mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <Filter size={18} className="text-green-600" />
+            <Filter size={18} className="text-indigo-600" />
             <h2 className="font-semibold text-gray-800">Filter</h2>
           </div>
 
@@ -95,41 +99,40 @@ export default function BooksPage() {
         {/* ===== CONTENT ===== */}
         {loading ? (
           <p className="text-center text-gray-500">Loading...</p>
-        ) : filteredBooks.length === 0 ? (
+        ) : filteredFiles.length === 0 ? (
           <div className="bg-white p-12 rounded-2xl shadow text-center">
             <FileText size={48} className="mx-auto text-gray-400 mb-4" />
             <p className="text-gray-600 text-lg">
-              No books found
+              No previous questions found
             </p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBooks.map((book) => (
+            {filteredFiles.map((f) => (
               <div
-                key={book._id}
+                key={f._id}
                 className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
               >
                 <div className="p-6">
                   <h3 className="font-semibold text-gray-800 mb-1">
-                    {book.title || book.subject}
+                    {f.subject}
                   </h3>
 
                   <p className="text-sm text-gray-500 mb-3">
-                    {book.year ? `${book.year} Year · ` : ""}
-                    {book.semester ? `${book.semester} Semester` : ""}
+                    {f.year} Year · {f.semester} Semester
                   </p>
 
-                  <span className="inline-block text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">
-                    {book.fileType?.toUpperCase() || "BOOK"}
+                  <span className="inline-block text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full mb-4">
+                    {f.fileType?.toUpperCase() || "DOCX"}
                   </span>
 
                   <a
-                    href={`/api/academic/download/${book._id}`}
+                    href={`/api/academic/download/${f._id}`}
                     className="flex items-center justify-center gap-2
-                               bg-green-600 text-white
+                               bg-indigo-600 text-white
                                px-4 py-2 rounded-lg
-                               hover:bg-green-700 transition text-sm"
-                    download={book.fileName}
+                               hover:bg-indigo-700 transition text-sm"
+                    download={f.fileName}
                   >
                     <Download size={16} />
                     Download

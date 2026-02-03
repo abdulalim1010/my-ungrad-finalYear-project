@@ -119,10 +119,11 @@ export default function Navbar() {
       name: "Academic",
       icon: Library,
       submenu: [
+        { label: "Syllabus", href: "/academic/syllabus" },
         { label: "Class Notes", href: "/academic/class-notes" },
         { label: "Books", href: "/academic/books" },
         { label: "Routine", href: "/academic/routine" },
-        { label: "Syllabus", href: "/academic/syllabus" },
+        { label: "Previous Questions", href: "/academic/previous-questions" },
       ],
     },
     {

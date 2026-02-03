@@ -181,8 +181,10 @@ export default function AdminAcademicUpload({ type: fixedType }) {
 
               <div className="flex gap-3">
                 <a
-                  href={f.downloadUrl}
+                  href={`/api/academic/download/${f._id}`}
                   className="text-blue-600 text-sm"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Download
                 </a>

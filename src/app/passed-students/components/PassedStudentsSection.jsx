@@ -22,13 +22,7 @@ export default function PassedStudentsSection() {
   }, []);
 
   return (
-    <motion.section
-      initial={{ opacity: 0, x: 120 }}   // 👉 right → left
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="max-w-7xl mx-auto px-6 py-16"
-    >
+    <section className="max-w-7xl mx-auto px-6 py-16">
       {/* ================= HEADER ================= */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
         <div>
@@ -49,38 +43,46 @@ export default function PassedStudentsSection() {
         </Link>
       </div>
 
-      {/* ================= GRID ================= */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {students.length === 0 && (
-          <p className="col-span-full text-center text-gray-500">
+      {/* ================= SINGLE ROW HORIZONTAL SCROLL ================= */}
+      <motion.div
+        className="overflow-x-auto pb-8"
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        {students.length === 0 ? (
+          <p className="text-center text-gray-500 py-8">
             No passed students found
           </p>
+        ) : (
+          <div className="flex gap-6 min-w-max px-2">
+            {students.map((s, index) => (
+              <motion.div
+                key={s._id}
+                initial={{ opacity: 0, x: 80 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                onClick={() => setActiveStudent(s)}
+                className="cursor-pointer bg-gradient-to-br from-purple-100 to-blue-100 rounded-3xl shadow-lg p-6 text-center hover:shadow-xl transition w-64"
+              >
+                <Image
+                  src={s.photoUrl}
+                  width={140}
+                  height={140}
+                  alt={s.name}
+                  className="mx-auto rounded-full object-cover border-4 border-white shadow-md"
+                />
+                <h3 className="mt-4 font-bold text-lg text-gray-800">
+                  {s.name}
+                </h3>
+                <p className="text-sm text-purple-600 mt-1">{s.designation}</p>
+              </motion.div>
+            ))}
+          </div>
         )}
-
-        {students.map((s, index) => (
-          <motion.div
-            key={s._id}
-            initial={{ opacity: 0, x: 80 }}   // 👉 card right → left
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            onClick={() => setActiveStudent(s)}
-            className="cursor-pointer bg-white rounded-3xl shadow-lg p-6 text-center hover:shadow-xl transition"
-          >
-            <Image
-              src={s.photoUrl}
-              width={140}
-              height={140}
-              alt={s.name}
-              className="mx-auto rounded-full object-cover"
-            />
-            <h3 className="mt-4 font-bold text-lg text-gray-800">
-              {s.name}
-            </h3>
-            <p className="text-sm text-blue-600">{s.designation}</p>
-          </motion.div>
-        ))}
-      </div>
+      </motion.div>
 
       {/* ================= MODAL ================= */}
       <AnimatePresence>
@@ -97,7 +99,7 @@ export default function PassedStudentsSection() {
               animate={{ scale: 1, x: 0 }}
               exit={{ scale: 0.8, x: 100 }}
               transition={{ duration: 0.4 }}
-              className="bg-white p-8 rounded-3xl max-w-sm w-full text-center"
+              className="bg-gradient-to-br from-purple-100 to-blue-100 p-8 rounded-3xl max-w-sm w-full text-center"
               onClick={(e) => e.stopPropagation()}
             >
               <Image
@@ -105,18 +107,18 @@ export default function PassedStudentsSection() {
                 width={180}
                 height={180}
                 alt={activeStudent.name}
-                className="mx-auto rounded-full object-cover"
+                className="mx-auto rounded-full object-cover border-4 border-white shadow-md"
               />
               <h2 className="text-xl font-bold mt-4 text-gray-800">
                 {activeStudent.name}
               </h2>
-              <p className="text-blue-600 mt-1">
+              <p className="text-purple-600 mt-1">
                 {activeStudent.designation}
               </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.section>
+    </section>
   );
 }
