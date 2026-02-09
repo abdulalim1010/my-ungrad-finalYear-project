@@ -7,6 +7,7 @@ export default function StudentForm({ onSubmit }) {
   const [formData, setFormData] = useState({
     name: "",
     studentId: "",
+    registerNumber: "",
     phone: "",
     email: "",
     session: "",
@@ -42,11 +43,26 @@ export default function StudentForm({ onSubmit }) {
   ];
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Only digits + max length control
+    if (name === "studentId" && !/^\d{0,8}$/.test(value)) return;
+    if (name === "registerNumber" && !/^\d{0,9}$/.test(value)) return;
+    if (name === "phone" && !/^\d*$/.test(value)) return;
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.studentId.length !== 8) {
+      return Swal.fire("Error", "Student ID must be exactly 8 digits", "error");
+    }
+
+    if (formData.registerNumber.length !== 9) {
+      return Swal.fire("Error", "Register Number must be exactly 9 digits", "error");
+    }
 
     const confirm = await Swal.fire({
       title: "Submit your information?",
@@ -71,6 +87,7 @@ export default function StudentForm({ onSubmit }) {
     setFormData({
       name: "",
       studentId: "",
+      registerNumber: "",
       phone: "",
       email: "",
       session: "",
@@ -86,14 +103,11 @@ export default function StudentForm({ onSubmit }) {
   return (
     <div className="p-10 bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl">
       <h1 className="text-3xl font-bold text-center text-blue-700 mb-8">
-        Students of  (EEE) BRUR
+        Students of (EEE) BRUR
       </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-      >
-        {/* Name */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
         <input
           type="text"
           name="name"
@@ -104,18 +118,28 @@ export default function StudentForm({ onSubmit }) {
           required
         />
 
-        {/* Student ID */}
         <input
           type="text"
           name="studentId"
-          placeholder="Student ID"
+          placeholder="Student ID (8 digits)"
           value={formData.studentId}
           onChange={handleChange}
+          maxLength={8}
           className="inputField"
           required
         />
 
-        {/* Phone */}
+        <input
+          type="text"
+          name="registerNumber"
+          placeholder="Register Number (9 digits)"
+          value={formData.registerNumber}
+          onChange={handleChange}
+          maxLength={9}
+          className="inputField"
+          required
+        />
+
         <input
           type="tel"
           name="phone"
@@ -126,7 +150,6 @@ export default function StudentForm({ onSubmit }) {
           required
         />
 
-        {/* Email */}
         <input
           type="email"
           name="email"
@@ -137,91 +160,36 @@ export default function StudentForm({ onSubmit }) {
           required
         />
 
-        {/* Session */}
-        <select
-          name="session"
-          value={formData.session}
-          onChange={handleChange}
-          className="inputField"
-          required
-        >
+        <select name="session" value={formData.session} onChange={handleChange} className="inputField" required>
           <option value="" disabled>Select Session</option>
-          {sessions.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
+          {sessions.map((s) => <option key={s}>{s}</option>)}
         </select>
 
-        {/* Year */}
-        <select
-          name="year"
-          value={formData.year}
-          onChange={handleChange}
-          className="inputField"
-          required
-        >
+        <select name="year" value={formData.year} onChange={handleChange} className="inputField" required>
           <option value="" disabled>Select Year</option>
-          {years.map((y) => (
-            <option key={y} value={y}>{y}</option>
-          ))}
+          {years.map((y) => <option key={y}>{y}</option>)}
         </select>
 
-        {/* Semester */}
-        <select
-          name="semester"
-          value={formData.semester}
-          onChange={handleChange}
-          className="inputField"
-          required
-        >
+        <select name="semester" value={formData.semester} onChange={handleChange} className="inputField" required>
           <option value="" disabled>Select Semester</option>
-          {semesters.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
+          {semesters.map((s) => <option key={s}>{s}</option>)}
         </select>
 
-        {/* Gender */}
-        <select
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-          className="inputField"
-          required
-        >
+        <select name="gender" value={formData.gender} onChange={handleChange} className="inputField" required>
           <option value="" disabled>Select Gender</option>
-          {genders.map((g) => (
-            <option key={g} value={g}>{g}</option>
-          ))}
+          {genders.map((g) => <option key={g}>{g}</option>)}
         </select>
 
-        {/* Religion */}
-        <select
-          name="religion"
-          value={formData.religion}
-          onChange={handleChange}
-          className="inputField"
-          required
-        >
+        <select name="religion" value={formData.religion} onChange={handleChange} className="inputField" required>
           <option value="" disabled>Select Religion</option>
-          {religions.map((r) => (
-            <option key={r} value={r}>{r}</option>
-          ))}
+          {religions.map((r) => <option key={r}>{r}</option>)}
         </select>
 
-        {/* District */}
-        <select
-          name="district"
-          value={formData.district}
-          onChange={handleChange}
-          className="inputField"
-          required
-        >
+        <select name="district" value={formData.district} onChange={handleChange} className="inputField" required>
           <option value="" disabled>Select District</option>
-          {districts.map((d) => (
-            <option key={d} value={d}>{d}</option>
-          ))}
+          {districts.map((d) => <option key={d}>{d}</option>)}
         </select>
 
-        {/* Address */}
         <input
           type="text"
           name="address"
@@ -232,12 +200,11 @@ export default function StudentForm({ onSubmit }) {
           required
         />
 
-        {/* Submit */}
         <button
           type="submit"
           className="md:col-span-2 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:scale-[1.02] transition"
         >
-         Save Your Information
+          Save Your Information
         </button>
       </form>
     </div>

@@ -27,61 +27,48 @@ const menu = [
     href: "/admin/dashboard/users",
     icon: Users,
   },
- 
 
   /* ================= PASSED STUDENTS ================= */
   {
     name: "Passed Students",
     href: "/admin/dashboard/passed-students",
-    icon: Users, // এখানে তুমি অন্য icon চাওলে পরিবর্তন করতে পারো
+    icon: Users,
   },
 
-
-
-  /*================= ACADEMIC ================= */
+  /* ================= STUDENTS DATA (ADMIN) ================= */
   {
-  name: "Academic Files",
-  icon: BookOpen,
-  submenu: [
-    {
-      name: "Notes",
-      href: "/admin/dashboard/academic/notes",
-    },
-    {
-      name: "Books",
-      href: "/admin/dashboard/academic/books",
-    },
-    {
-      name: "Syllabus",
-      href: "/admin/dashboard/academic/syllabus",
-    },
-    {
-      name: "Routine",
-      href: "/admin/dashboard/academic/routine",
-    },
-    {
-      name: "Previous Questions",
-      href: "/admin/dashboard/academic/previous-questions",
-    },
-  ],
-},
+    name: "Students Data",
+    href: "/admin/dashboard/students",
+    icon: Users,
+  },
+
+  /* ================= ACADEMIC ================= */
+  {
+    name: "Academic Files",
+    icon: BookOpen,
+    submenu: [
+      { name: "Notes", href: "/admin/dashboard/academic/notes" },
+      { name: "Books", href: "/admin/dashboard/academic/books" },
+      { name: "Syllabus", href: "/admin/dashboard/academic/syllabus" },
+      { name: "Routine", href: "/admin/dashboard/academic/routine" },
+      {
+        name: "Previous Questions",
+        href: "/admin/dashboard/academic/previous-questions",
+      },
+    ],
+  },
+
   /* ================= RESEARCH ================= */
   {
     name: "Research",
     icon: FlaskConical,
     submenu: [
-      {
-        name: "Research Areas",
-        href: "/admin/dashboard/research/areas",
-      },
+      { name: "Research Areas", href: "/admin/dashboard/research/areas" },
       {
         name: "Publications",
         href: "/admin/dashboard/research/publications",
       },
-      {
-        name: "Projects",
-        href: "/admin/dashboard/research/projects",
-      },
+      { name: "Projects", href: "/admin/dashboard/research/projects" },
     ],
   },
 
@@ -90,14 +77,8 @@ const menu = [
     name: "Gallery",
     icon: FileText,
     submenu: [
-      {
-        name: "All Gallery",
-        href: "/admin/dashboard/gallery",
-      },
-      {
-        name: "Requests",
-        href: "/admin/dashboard/gallery/requests",
-      },
+      { name: "All Gallery", href: "/admin/dashboard/gallery" },
+      { name: "Requests", href: "/admin/dashboard/gallery/requests" },
     ],
   },
 
@@ -119,7 +100,6 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white flex flex-col shadow-2xl">
-
       {/* ===== HEADER ===== */}
       <div className="p-6 border-b border-blue-700">
         <h1 className="text-2xl font-bold mb-1">Admin Panel</h1>
@@ -159,9 +139,7 @@ export default function Sidebar() {
           return (
             <div key={item.name}>
               <button
-                onClick={() =>
-                  setOpenMenu(isOpen ? null : item.name)
-                }
+                onClick={() => setOpenMenu(isOpen ? null : item.name)}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200"
               >
                 <Icon size={20} />

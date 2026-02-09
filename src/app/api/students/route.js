@@ -1,10 +1,12 @@
 import clientPromise from "@/lib/mongodb";
 
-/* ================= GET ALL STUDENTS ================= */
-export async function GET() {
+/* =========================
+   GET STUDENTS (Public)
+   ========================= */
+export async function GET(req) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const students = await db
       .collection("students")
@@ -14,53 +16,49 @@ export async function GET() {
 
     return new Response(JSON.stringify(students), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("GET students error:", err);
     return new Response(
-      JSON.stringify({ error: "Failed to fetch students" }),
+      JSON.stringify({ error: "Server error", message: err.message }),
       { status: 500 }
     );
   }
 }
 
-/* ================= ADD STUDENT ================= */
+/* =========================
+   POST STUDENT (Public)
+   ========================= */
 export async function POST(req) {
   try {
-    const data = await req.json();
+    const body = await req.json();
 
-    /* 🔒 Basic Validation */
-    if (
-      !data.name ||
-      !data.studentId ||
-      !data.session ||
-      !data.year ||
-      !data.email ||
-      !data.district
-    ) {
+    // Minimum required validation
+    if (!body.name || !body.studentId) {
       return new Response(
-        JSON.stringify({ error: "All required fields are missing" }),
+        JSON.stringify({ error: "Name and Student ID are required" }),
         { status: 400 }
       );
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
+    // Save all form fields dynamically
     const result = await db.collection("students").insertOne({
-      ...data,
+      ...body, // this will save everything from formData
       createdAt: new Date(),
     });
 
     return new Response(
-      JSON.stringify({ insertedId: result.insertedId }),
+      JSON.stringify({ success: true, id: result.insertedId }),
       { status: 201 }
     );
-  } catch (error) {
+  } catch (err) {
+    console.error("POST student error:", err);
     return new Response(
-      JSON.stringify({ error: "Failed to save student" }),
+      JSON.stringify({ error: "Server error", message: err.message }),
       { status: 500 }
     );
   }

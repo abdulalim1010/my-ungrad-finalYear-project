@@ -10,6 +10,9 @@ export async function GET(req) {
     // Get total users count
     const totalUsers = await db.collection("users").countDocuments();
 
+    // Get total students count
+    const totalStudents = await db.collection("students").countDocuments();
+
     // Get total academic files count
     const totalAcademicFiles = await db.collection("academic").countDocuments();
 
@@ -23,6 +26,7 @@ export async function GET(req) {
 
     return Response.json({
       users: totalUsers,
+      students: totalStudents,
       academicFiles: totalAcademicFiles,
       notices: totalNotices,
       pending: pendingItems || 0,
@@ -30,7 +34,7 @@ export async function GET(req) {
   } catch (err) {
     console.error("API /admin/dashboard error:", err);
     return Response.json(
-      { error: "Failed to fetch dashboard data", users: 0, academicFiles: 0, notices: 0, pending: 0 },
+      { error: "Failed to fetch dashboard data", users: 0, students: 0, academicFiles: 0, notices: 0, pending: 0 },
       { status: 500 }
     );
   }

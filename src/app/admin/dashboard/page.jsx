@@ -1,13 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import useAdmin from "@/hooks/useAdmin";
-import { Users, FileText, Bell, Clock, TrendingUp, BookOpen } from "lucide-react";
+import { Users, FileText, Bell, Clock, TrendingUp, BookOpen, GraduationCap } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const { isAdmin, loading } = useAdmin();
   const [stats, setStats] = useState({
     users: 0,
+    students: 0,
     academicFiles: 0,
     notices: 0,
     pending: 0,
@@ -24,6 +26,7 @@ export default function AdminDashboardPage() {
         const data = await res.json();
         setStats({
           users: data.users || 0,
+          students: data.students || 0,
           academicFiles: data.academicFiles || 0,
           notices: data.notices || 0,
           pending: data.pending || 0,
@@ -51,7 +54,7 @@ export default function AdminDashboardPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-gray-600 mb-4">Access denied. Admin privileges required.</p>
-          <a href="/" className="text-blue-600 hover:underline">Return to Home</a>
+          <Link href="/" className="text-blue-600 hover:underline">Return to Home</Link>
         </div>
       </div>
     );
@@ -64,6 +67,14 @@ export default function AdminDashboardPage() {
       icon: Users,
       color: "blue",
       bgGradient: "from-blue-500 to-blue-600",
+    },
+    {
+      title: "Students Data",
+      value: stats.students,
+      icon: GraduationCap,
+      color: "cyan",
+      bgGradient: "from-cyan-500 to-cyan-600",
+      href: "/admin/dashboard/students",
     },
     {
       title: "Academic Files",
@@ -108,10 +119,10 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map((card) => {
             const Icon = card.icon;
-            return (
+            const cardContent = (
               <div
                 key={card.title}
-                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                className={`bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 ${card.href ? 'cursor-pointer' : ''}`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className={`p-3 rounded-lg bg-gradient-to-br ${card.bgGradient}`}>
@@ -127,6 +138,15 @@ export default function AdminDashboardPage() {
                 </p>
               </div>
             );
+
+            // If card has href, wrap in Link
+            return card.href ? (
+              <a key={card.title} href={card.href} className="block">
+                {cardContent}
+              </a>
+            ) : (
+              cardContent
+            );
           })}
         </div>
       )}
@@ -134,7 +154,15 @@ export default function AdminDashboardPage() {
       {/* Quick Actions Section */}
       <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <a
+            href="/admin/dashboard/students"
+            className="p-4 border-2 border-gray-200 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 transition-all duration-200"
+          >
+            <GraduationCap className="text-cyan-600 mb-2" size={24} />
+            <h3 className="font-semibold text-gray-800">Students Data</h3>
+            <p className="text-sm text-gray-600">View and manage students</p>
+          </a>
           <a
             href="/admin/dashboard/academic"
             className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
