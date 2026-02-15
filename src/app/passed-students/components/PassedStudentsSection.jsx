@@ -9,22 +9,23 @@ import useUser from "@/hooks/useUser";
 export default function PassedStudentsSection() {
   const [students, setStudents] = useState([]);
   const [expandedCard, setExpandedCard] = useState(null);
-  const { user, loading } = useUser();
   const controls = useAnimation();
+  const { user, loading } = useUser();
 
+  // fetch data
   useEffect(() => {
     fetch("/api/passed-students?status=approved")
-      .then((res) => res.json())
-      .then((data) => Array.isArray(data) && setStudents(data));
+      .then(res => res.json())
+      .then(data => setStudents(Array.isArray(data) ? data : []));
   }, []);
 
-  // RIGHT → LEFT animation
+  // RIGHT → LEFT continuous animation
   useEffect(() => {
     if (students.length) {
       controls.start({
         x: ["0%", "-50%"],
         transition: {
-          duration: students.length * 5,
+          duration: students.length * 6,
           ease: "linear",
           repeat: Infinity,
         },
@@ -32,150 +33,180 @@ export default function PassedStudentsSection() {
     }
   }, [students, controls]);
 
-  // Hover to pause animation
-  const handleMouseEnter = () => {
-    controls.stop();
+  const pause = () => controls.stop();
+  const resume = () => {
+    controls.start({
+      x: ["0%", "-50%"],
+      transition: {
+        duration: students.length * 6,
+        ease: "linear",
+        repeat: Infinity,
+      },
+    });
   };
 
-  const handleMouseLeave = () => {
-    if (students.length) {
-      controls.start({
-        x: ["0%", "-50%"],
-        transition: {
-          duration: students.length * 5,
-          ease: "linear",
-          repeat: Infinity,
-        },
-      });
-    }
-  };
-
-  // Toggle card expansion
-  const toggleCard = (student) => {
-    setExpandedCard(expandedCard === student ? null : student);
-  };
+  // deep premium gradients
+const gradients = [
+  "from-red-900 via-red-700 to-red-800",
+  "from-blue-900 via-blue-700 to-blue-800",
+  "from-green-900 via-green-700 to-green-800",
+  "from-purple-900 via-purple-700 to-purple-800",
+  "from-indigo-900 via-indigo-700 to-indigo-800",
+];
 
   return (
-    <section className="relative max-w-7xl mx-auto px-4 py-16 overflow-hidden">
-      {/* ================= HEADER ================= */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-14">
+    <section className="max-w-7xl mx-auto px-4 py-20 overflow-hidden">
+
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-12">
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            Our Proud Passed Students 🎓
+          <h2 className="text-4xl font-bold text-gray-100">
+            Passed Students
           </h2>
-          <p className="text-gray-600 mt-2">
-            EEE Department – Alumni Highlights
+          <p className="text-gray-400 mt-2">
+            Our Department Alumni
           </p>
         </div>
 
-        {/* 🔥 CTA BUTTON - Show only if user is logged in and is a student */}
         {!loading && user && (
           <Link
             href="/passed-students/submit"
-            className="relative px-8 py-4 rounded-full font-semibold text-white 
-            bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 
-            hover:scale-105 transition-all shadow-xl"
+            className="px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg"
           >
-            ✨ Add Your Information
+            Add Info
           </Link>
         )}
       </div>
 
-      {/* ================= SLIDER ================= */}
+      {/* SLIDER */}
       <div
-        className="relative w-full overflow-hidden"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        className="overflow-hidden"
+        onMouseEnter={pause}
+        onMouseLeave={resume}
       >
         <motion.div
-          className="flex gap-6 w-max"
           animate={controls}
+          className="flex gap-8 w-max"
         >
-          {[...students, ...students].map((s, i) => (
-            <motion.div
-              key={i}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ 
-                opacity: 1, 
-                scale: expandedCard === s ? 1.3 : 1,
-                zIndex: expandedCard === s ? 10 : 1
-              }}
-              whileHover={{ 
-                scale: expandedCard === s ? 1.3 : 1.05,
-                boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
-              }}
-              onClick={() => toggleCard(s)}
-              className={`
-                cursor-pointer rounded-3xl p-6
-                bg-gradient-to-br from-[#1e3c72] via-[#2a5298] to-[#6dd5ed]
-                text-white shadow-2xl backdrop-blur-xl
-                transition-all duration-300
-                ${expandedCard === s ? "fixed inset-4 md:inset-10 lg:inset-20 z-50 max-w-2xl mx-auto h-fit" : "w-72"}
-              `}
-            >
-              <div className={`${expandedCard === s ? "flex flex-row items-center gap-8" : ""}`}>
+          {[...students, ...students].map((s, i) => {
+
+            const gradient =
+              gradients[i % gradients.length];
+
+            return (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.08 }}
+                onClick={() => setExpandedCard(s)}
+                className={`
+                  cursor-pointer
+                  w-72 h-96
+                  rounded-3xl
+                  bg-gradient-to-br ${gradient}
+                  shadow-2xl
+                  border border-white/10
+                  backdrop-blur-xl
+                  flex flex-col items-center
+                  justify-center
+                  text-white
+                `}
+              >
+
                 <Image
                   src={s.photoUrl}
                   alt={s.name}
-                  width={expandedCard === s ? 280 : 140}
-                  height={expandedCard === s ? 280 : 140}
-                  className={`
-                    mx-auto rounded-full border-4 border-white object-cover
-                    ${expandedCard === s ? "w-60 h-60 md:w-72 md:h-72" : "w-32 h-32"}
-                  `}
+                  width={140}
+                  height={140}
+                  className="rounded-full border-4 border-white shadow-xl object-cover"
                 />
-                <div className={expandedCard === s ? "text-left" : "text-center"}>
-                  <h3 className={`${expandedCard === s ? "text-3xl" : "text-xl"} font-bold`}>
-                    {s.name}
-                  </h3>
-                  <p className={`mt-2 opacity-90 ${expandedCard === s ? "text-lg" : "text-sm"}`}>
-                    Batch: {s.batch}
-                  </p>
-                  <p className={`mt-1 ${expandedCard === s ? "text-xl" : "text-sm"}`}>
-                    {s.designation || "Graduate"}
-                  </p>
-                  <p className={`italic opacity-80 mt-1 ${expandedCard === s ? "text-lg" : "text-xs"}`}>
-                    {s.company || "—"}
-                  </p>
-                  {expandedCard === s && (
-                    <p className="mt-4 text-sm opacity-75">
-                      {s.email && `📧 ${s.email}`}
-                    </p>
-                  )}
-                </div>
-              </div>
-              
-              {expandedCard === s && (
-                <motion.button
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center text-xl"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setExpandedCard(null);
-                  }}
-                >
-                  ✕
-                </motion.button>
-              )}
-            </motion.div>
-          ))}
+
+                <h3 className="mt-6 text-xl font-bold">
+                  {s.name}
+                </h3>
+
+                <p className="text-gray-300 text-sm">
+                  Batch {s.batch}
+                </p>
+
+                <p className="text-indigo-300 text-sm mt-1">
+                  {s.designation || "Graduate"}
+                </p>
+
+                <p className="text-gray-400 text-xs italic">
+                  {s.company || "No company"}
+                </p>
+
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
 
-      {/* ================= OVERLAY FOR EXPANDED CARD ================= */}
+      {/* EXPANDED MODAL */}
       <AnimatePresence>
         {expandedCard && (
-          <motion.div
-            className="fixed inset-0 z-40 bg-black/50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setExpandedCard(null)}
-          />
+          <>
+            {/* overlay */}
+            <motion.div
+              className="fixed inset-0 bg-black/70 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setExpandedCard(null)}
+            />
+
+            {/* expanded card */}
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              className="
+                fixed z-50
+                top-1/2 left-1/2
+                -translate-x-1/2 -translate-y-1/2
+                w-[90%] max-w-2xl
+                rounded-3xl
+                bg-gradient-to-br from-[#141e30] via-[#243b55] to-[#0f2027]
+                p-10 text-white shadow-2xl
+              "
+            >
+
+              <Image
+                src={expandedCard.photoUrl}
+                alt=""
+                width={220}
+                height={220}
+                className="mx-auto rounded-full border-4 border-white"
+              />
+
+              <h3 className="text-3xl font-bold text-center mt-6">
+                {expandedCard.name}
+              </h3>
+
+              <p className="text-center text-lg mt-2">
+                Batch: {expandedCard.batch}
+              </p>
+
+              <p className="text-center mt-2">
+                {expandedCard.designation}
+              </p>
+
+              <p className="text-center italic text-gray-300">
+                {expandedCard.company}
+              </p>
+
+              <button
+                onClick={() => setExpandedCard(null)}
+                className="absolute top-4 right-4 text-2xl"
+              >
+                ✕
+              </button>
+
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
+
     </section>
   );
 }
