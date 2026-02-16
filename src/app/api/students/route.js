@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 
 /* =========================
    GET STUDENTS (Public)
@@ -6,7 +6,7 @@ import clientPromise from "@/lib/mongodb";
 export async function GET(req) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const students = await db
       .collection("students")
@@ -43,7 +43,7 @@ export async function POST(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     // Save all form fields dynamically
     const result = await db.collection("students").insertOne({

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default async function GalleryPage() {
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   const items = await db
     .collection("student_gallery")

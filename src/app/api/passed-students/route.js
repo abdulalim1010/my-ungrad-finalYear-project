@@ -12,7 +12,7 @@ export async function GET(req) {
     const status = searchParams.get("status");
 
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const query = status ? { status } : {};
 
@@ -69,7 +69,7 @@ export async function POST(req) {
     });
 
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("passed_students").insertOne({
       name,
@@ -102,7 +102,7 @@ export async function PATCH(req) {
     const { id, status } = await req.json();
 
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("passed_students").updateOne(
       { _id: new ObjectId(id) },
@@ -134,7 +134,7 @@ export async function DELETE(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("passed_students").deleteOne({
       _id: new ObjectId(id),

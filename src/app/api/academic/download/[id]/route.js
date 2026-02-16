@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import cloudinary from "@/lib/cloudinary";
 
@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
   try {
     const { id } = await params;
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const file = await db
       .collection("academic")

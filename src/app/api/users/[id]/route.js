@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 /**
@@ -18,7 +18,7 @@ export async function PATCH(req, { params }) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const result = await db.collection("users").updateOne(
       { _id: new ObjectId(id) },
@@ -52,7 +52,7 @@ export async function DELETE(req, { params }) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const result = await db.collection("users").deleteOne({
       _id: new ObjectId(id),

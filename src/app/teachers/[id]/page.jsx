@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
 
@@ -25,7 +25,7 @@ export default async function TeacherDetail(props) {
   const { id } = await props.params;
 
   const client = await clientPromise;
-  const db = client.db("departmentDB");
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   let objectId;
   try {

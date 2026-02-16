@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import { cookies } from "next/headers";
 
 export async function GET() {
@@ -15,7 +15,7 @@ export async function GET() {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const user = await db.collection("users").findOne({ email });
 

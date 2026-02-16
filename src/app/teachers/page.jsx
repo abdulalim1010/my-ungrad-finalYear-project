@@ -1,9 +1,9 @@
 import Link from "next/link";
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 
 export default async function TeachersPage() {
   const client = await clientPromise;
-  const db = client.db("departmentDB");
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   const teachers = await db.collection("teachers").find({}).toArray();
 

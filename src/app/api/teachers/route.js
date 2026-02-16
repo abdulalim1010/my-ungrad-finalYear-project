@@ -1,9 +1,9 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
     const collection = db.collection("teachers");
 
     const teachers = await collection.find({}).toArray();

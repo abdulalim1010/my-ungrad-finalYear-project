@@ -1,11 +1,11 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     // Get total users count
     const totalUsers = await db.collection("users").countDocuments();

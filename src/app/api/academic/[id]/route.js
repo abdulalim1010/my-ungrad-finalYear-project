@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
 import { ObjectId } from "mongodb";
 
@@ -17,7 +17,7 @@ export async function GET(req, { params }) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const file = await db
       .collection("academic")
@@ -53,7 +53,7 @@ export async function DELETE(req, { params }) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const file = await db
       .collection("academic")

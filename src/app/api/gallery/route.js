@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
 
 export async function POST(req) {
@@ -12,7 +12,7 @@ export async function POST(req) {
   );
 
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   await db.collection("student_gallery").insertOne({
     title: data.get("title"),

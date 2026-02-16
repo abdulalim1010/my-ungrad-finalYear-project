@@ -1,9 +1,9 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export async function GET() {
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
   const data = await db.collection("research_areas").find().toArray();
   return Response.json(data);
 }
@@ -11,7 +11,7 @@ export async function GET() {
 export async function POST(req) {
   const { title, description } = await req.json();
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   await db.collection("research_areas").insertOne({
     title,
@@ -25,7 +25,7 @@ export async function POST(req) {
 export async function DELETE(req) {
   const { id } = await req.json();
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   await db.collection("research_areas").deleteOne({
     _id: new ObjectId(id),

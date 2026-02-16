@@ -1,16 +1,12 @@
 
-
-
 import ViewCounter from "@/app/components/ViewCounter";
-import clientPromise from "@/lib/mongodb";
-
-
+import { clientPromise } from "@/lib/mongodb";
 export default async function SingleNews({ params }) {
   // ✅ Next.js 16 requires await
   const { slug } = await params;
 
   const client = await clientPromise;
-  const db = client.db("departmentDB");
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   // ✅ DEFINE news
   const news = await db.collection("news").findOne({ slug });

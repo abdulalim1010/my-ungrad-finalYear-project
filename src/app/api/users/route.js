@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 
 /**
  * POST: Register user in MongoDB
@@ -16,7 +16,7 @@ export async function POST(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db("departmentDB"); // ✅ fixed DB name
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     // Check existing user
     const existingUser = await db.collection("users").findOne({ email });
@@ -69,7 +69,7 @@ export async function POST(req) {
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const users = await db.collection("users").find().toArray();
 

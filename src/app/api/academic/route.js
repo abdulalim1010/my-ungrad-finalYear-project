@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
 import { ObjectId } from "mongodb";
 
@@ -15,7 +15,7 @@ export async function GET(req) {
   }
 
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB);
+  const db = client.db(process.env.MONGODB_DB || "department_portal");
 
   const files = await db
     .collection("academic")
@@ -77,7 +77,7 @@ export async function POST(req) {
 
     /* ---------- Save to DB ---------- */
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     await db.collection("academic").insertOne({
       subject,
@@ -110,7 +110,7 @@ export async function DELETE(req) {
     const { id } = await req.json();
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const file = await db
       .collection("academic")

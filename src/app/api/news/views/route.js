@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -13,7 +13,7 @@ export async function POST(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db("departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     await db.collection("news").updateOne(
       { slug },
