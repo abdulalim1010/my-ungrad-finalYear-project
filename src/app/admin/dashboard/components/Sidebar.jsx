@@ -27,6 +27,11 @@ const menu = [
     href: "/admin/dashboard/users",
     icon: Users,
   },
+/* ================= PAYMENTS ================= */{
+  name: "Payments",
+  href: "/admin/dashboard/payments",
+  icon: FileText,
+},
 
   /* ================= PASSED STUDENTS ================= */
   {

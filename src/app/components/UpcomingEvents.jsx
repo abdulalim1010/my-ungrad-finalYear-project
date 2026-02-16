@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Clock, MapPin, Calendar, ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import SSLPaymentButton from "./SSLPaymentButton";
 
 export default function UpcomingEvents() {
   const [events, setEvents] = useState([]);
@@ -57,6 +58,11 @@ export default function UpcomingEvents() {
 
   return (
     <section className="relative py-20 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 overflow-hidden">
+
+
+     
+        <SSLPaymentButton/>
+     
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { clientPromise } from "@/lib/mongodb";
 
 // 🔥 MUST — build / vercel safe
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ export async function GET(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
     const user = await db.collection("users").findOne({ email });
 
