@@ -184,7 +184,7 @@ export default function Sidebar() {
       {/* ===== LOGOUT ===== */}
       <div className="p-4 border-t border-blue-700">
         <button
-          onClick={() => signOut(auth)}
+          onClick={() => auth && signOut(auth)}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition-all duration-200 font-medium shadow-lg"
         >
           <LogOut size={18} />

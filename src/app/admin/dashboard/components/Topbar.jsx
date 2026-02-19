@@ -9,6 +9,7 @@ export default function Topbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    if (!auth) return;
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });

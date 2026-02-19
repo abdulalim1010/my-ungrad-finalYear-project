@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -10,6 +10,11 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+// Create a shared Firebase app instance
+const firebaseApp = getApps().length === 0 
+  ? (typeof window !== 'undefined' ? initializeApp(firebaseConfig) : null)
+  : getApps()[0];
 
-export const auth = getAuth(app);
+// Export auth - will be null during SSR/build time, but valid on client
+export const auth = firebaseApp ? getAuth(firebaseApp) : null;
+export default firebaseApp;

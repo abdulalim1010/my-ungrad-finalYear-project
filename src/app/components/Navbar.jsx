@@ -39,6 +39,7 @@ export default function Navbar() {
 
   /* 🔐 Auth + Role */
   useEffect(() => {
+    if (!auth) return;
     const unsub = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
@@ -107,6 +108,7 @@ export default function Navbar() {
   }, [showNotifications]);
 
   const handleLogout = async () => {
+    if (!auth) return;
     await signOut(auth);
     setUser(null);
     setRole(null);

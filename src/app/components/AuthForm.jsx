@@ -29,6 +29,11 @@ export default function AuthForm({ isLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!auth) {
+      setError("Authentication not initialized. Please refresh the page.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError("");
 
@@ -86,6 +91,11 @@ export default function AuthForm({ isLogin }) {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!auth) {
+      setError("Authentication not initialized. Please refresh the page.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError("");
     try {
