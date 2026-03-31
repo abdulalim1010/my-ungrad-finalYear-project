@@ -11,6 +11,8 @@ import {
   BookOpen,
   FlaskConical,
   FileText,
+  GraduationCap,
+  UserCog,
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/components/firebase";
@@ -74,6 +76,16 @@ const menu = [
         href: "/admin/dashboard/research/publications",
       },
       { name: "Projects", href: "/admin/dashboard/research/projects" },
+    ],
+  },
+
+  /* ================= FACULTY MEMBERS ================= */
+  {
+    name: "Faculty Members",
+    icon: GraduationCap,
+    submenu: [
+      { name: "Teachers", href: "/admin/dashboard/faculty/teachers" },
+      { name: "Staff", href: "/admin/dashboard/faculty/staff" },
     ],
   },
 

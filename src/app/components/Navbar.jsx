@@ -146,9 +146,12 @@ export default function Navbar() {
       ],
     },
     {
-      name: "Teachers",
+      name: "Faculty Members",
       icon: GraduationCap,
-      submenu: [{ label: "Faculty Members", href: "/teachers" }],
+      submenu: [
+        { label: "Teachers", href: "/teachers" },
+        { label: "Staff Members", href: "/staff" },
+      ],
     },
 
       { name: "About", icon: Info, href: "/about" },

@@ -7,7 +7,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
   const [year, setYear] = useState("1st");
   const [semester, setSemester] = useState("1st");
   const [subject, setSubject] = useState("");
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState (null);
 
   const [loading, setLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
