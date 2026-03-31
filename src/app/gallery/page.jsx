@@ -1,6 +1,10 @@
 import { clientPromise } from "@/lib/mongodb";
 import Link from "next/link";
 
+// Force dynamic rendering to prevent pre-rendering errors
+// This ensures MongoDB connection happens at request time, not build time
+export const dynamic = 'force-dynamic';
+
 export default async function GalleryPage() {
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB || "department_portal");

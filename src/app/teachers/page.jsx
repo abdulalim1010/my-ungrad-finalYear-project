@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { clientPromise } from "@/lib/mongodb";
 
+// Force dynamic rendering to prevent pre-rendering errors
+export const dynamic = 'force-dynamic';
+
 export default async function TeachersPage() {
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB || "department_portal");
