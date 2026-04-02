@@ -8,8 +8,41 @@ export default function AdminStudentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleting, setDeleting] = useState(null);
 
-  const itemsPerPage = 3; // এক পেজে 3 student card দেখাবে
+  const itemsPerPage = 10;
+
+  /* ================= DELETE STUDENT ================= */
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this student?")) return;
+    
+    try {
+      setDeleting(id);
+      const res = await fetch("/api/students", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) throw new Error("Failed to delete");
+
+      setSavedData((prev) => prev.filter((s) => s._id !== id));
+      alert("Student deleted successfully");
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete student");
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const cardGradients = [
+    "from-blue-50 to-indigo-50",
+    "from-green-50 to-emerald-50",
+    "from-purple-50 to-pink-50",
+    "from-amber-50 to-orange-50",
+    "from-cyan-50 to-sky-50",
+  ];
 
   /* ================= LOAD STUDENTS ================= */
   useEffect(() => {
@@ -91,14 +124,23 @@ export default function AdminStudentsPage() {
           </div>
         )}
 
-        {paginatedData.map((s) => (
+        {paginatedData.map((s, idx) => (
           <div
             key={s._id}
-            className="bg-white shadow rounded-xl p-6 border border-blue-100"
+            className={`bg-gradient-to-r ${cardGradients[idx % cardGradients.length]} shadow-lg rounded-xl p-6 border border-gray-200`}
           >
-            <h2 className="text-xl font-semibold text-blue-700 mb-4">
-              {s.name} ({s.studentId})
-            </h2>
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">
+                {s.name} ({s.studentId})
+              </h2>
+              <button
+                onClick={() => handleDelete(s._id)}
+                disabled={deleting === s._id}
+                className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 disabled:bg-red-300 transition-colors"
+              >
+                {deleting === s._id ? "Deleting..." : "Delete"}
+              </button>
+            </div>
 
             {/* Grid: 2 rows, 3 columns */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -147,9 +189,10 @@ export default function AdminStudentsPage() {
         <div className="flex justify-center items-center gap-4 mt-6">
           <button
             onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-            className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Previous
+            ← Prev
           </button>
 
           <span className="font-semibold text-blue-700">
@@ -158,9 +201,10 @@ export default function AdminStudentsPage() {
 
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-            className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg"
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Next
+            Next →
           </button>
         </div>
       )}

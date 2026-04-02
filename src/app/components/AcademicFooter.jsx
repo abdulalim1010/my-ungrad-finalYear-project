@@ -1,8 +1,11 @@
 "use client";
 
+import Developer from "./Developer";
+
 export default function AcademicFooter() {
   return (
     <footer className="mt-16 bg-blue-50 border-t border-blue-100">
+     
       {/* TOP SECTION */}
       <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
 
@@ -60,6 +63,7 @@ export default function AcademicFooter() {
           © {new Date().getFullYear()} Department of EEE — All Rights Reserved
         </p>
       </div>
+       <Developer/>
     </footer>
   );
 }

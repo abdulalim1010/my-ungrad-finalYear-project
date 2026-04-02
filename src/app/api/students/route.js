@@ -1,4 +1,6 @@
+import { NextResponse } from "next/server";
 import { clientPromise } from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 /* =========================
    GET STUDENTS (Public)
@@ -59,6 +61,37 @@ export async function POST(req) {
     console.error("POST student error:", err);
     return new Response(
       JSON.stringify({ error: "Server error", message: err.message }),
+      { status: 500 }
+    );
+  }
+}
+
+/* =========================
+   DELETE STUDENT
+   ========================= */
+export async function DELETE(req) {
+  try {
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
+
+    await db.collection("students").deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("DELETE student error:", err);
+    return NextResponse.json(
+      { error: "Failed to delete student", message: err.message },
       { status: 500 }
     );
   }

@@ -56,27 +56,27 @@ export default async function StaffPage() {
         <div className="absolute inset-0 bg-black/30" />
 
         {/* HEADER CONTENT */}
-        <div className="relative z-10 text-center px-6">
+        <div className="relative z-10 text-center px-8">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
             Staff Members of EEE Department
           </h1>
-          <p className="text-white font-bold text-lg max-w-3xl mx-auto">
+          <p className="text-white font-bold text-xl max-w-3xl mx-auto">
             Our dedicated administrative and support staff members
           </p>
         </div>
       </div>
 
       {/* ================= CONTENT ================= */}
-      <div className="max-w-7xl mx-auto px-6 py-20">
+      <div className="max-w-7xl mx-auto px-8 py-16">
         {/* If there's a registrar or staff */}
         {(staff.length > 0 || registrar) ? (
           <div>
             {/* ===== REGISTRAR SPECIAL CARD ===== */}
             {registrar && (
-              <div className="mb-16">
-                <div className="text-center mb-8">
+              <div className="mb-20">
+                <div className="text-center mb-10">
                   <h2 className="text-3xl font-bold text-gray-800">All Member of the Offical Staff</h2>
-                  <div className="h-1 w-24 bg-gradient-to-r from-amber-500 to-amber-600 mx-auto mt-2"></div>
+                  <div className="h-1 w-28 bg-gradient-to-r from-amber-500 to-amber-600 mx-auto mt-3"></div>
                 </div>
                 <div className="flex justify-center">
                   <Link
@@ -133,7 +133,7 @@ export default async function StaffPage() {
 
                         {/* Phone */}
                         {registrar.phone && (
-                          <p className="text-gray-600 text-sm mb-4">
+                          <p className="text-gray-600 text-base mb-4">
                             📞 {registrar.phone}
                           </p>
                         )}
@@ -167,11 +167,11 @@ export default async function StaffPage() {
             {/* ===== OTHER STAFF GRID ===== */}
             {staff.length > 0 && (
               <div>
-                <div className="text-center mb-8">
+                <div className="text-center mb-10">
                   <h2 className="text-3xl font-bold text-gray-800">Other Staff Members</h2>
-                  <div className="h-1 w-32 bg-gradient-to-r from-green-500 to-teal-600 mx-auto mt-2"></div>
+                  <div className="h-1 w-36 bg-gradient-to-r from-green-500 to-teal-600 mx-auto mt-3"></div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
                   {staff.map((member) => (
                     <Link
                       key={member._id.toString()}
@@ -200,33 +200,33 @@ export default async function StaffPage() {
                         </div>
 
                         {/* ===== CARD CONTENT ===== */}
-                        <div className="pt-24 pb-8 px-6 text-center">
-                          <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                        <div className="pt-26 pb-10 px-8 text-center">
+                          <h2 className="text-xl font-bold text-gray-800 mb-2">
                             {member.name}
                           </h2>
 
                           {/* DESIGNATION BADGE */}
                           <span
-                            className="inline-block mt-2 px-4 py-1 rounded-full
+                            className="inline-block mt-2 px-5 py-1.5 rounded-full
                                        bg-green-100 text-green-700 text-sm font-semibold"
                           >
                             {member.designation}
                           </span>
 
-                          <p className="text-gray-500 mt-3 mb-2">
+                          <p className="text-gray-500 mt-4 mb-2 text-base">
                             {member.department || "EEE Department"}
                           </p>
 
                           {/* Phone Number */}
                           {member.phone && (
-                            <p className="text-gray-600 text-sm mb-4">
+                            <p className="text-gray-600 text-base mb-4">
                               📞 {member.phone}
                             </p>
                           )}
 
                           {/* BUTTON */}
                           <button
-                            className="px-7 py-2.5 rounded-full
+                            className="px-8 py-3 rounded-full
                                        bg-gradient-to-r from-green-600 to-teal-600
                                        text-white font-semibold
                                        hover:from-green-700 hover:to-teal-700
