@@ -24,6 +24,10 @@ function FadeInWrapper({ children, className }) {
 export default async function StaffDetail(props) {
   const { id } = await props.params;
 
+  if (!clientPromise) {
+    return <div className="text-center p-10">Database not configured</div>;
+  }
+
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB || "department_portal");
 

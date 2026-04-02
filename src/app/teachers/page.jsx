@@ -1,14 +1,22 @@
 import Link from "next/link";
 import { clientPromise } from "@/lib/mongodb";
 
-// Force dynamic rendering to prevent pre-rendering errors
 export const dynamic = 'force-dynamic';
 
 export default async function TeachersPage() {
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || "department_portal");
-
-  const teachers = await db.collection("teachers").find({}).toArray();
+  let teachers = [];
+  let hod = null;
+  
+  try {
+    if (!clientPromise) {
+      throw new Error("Database not configured");
+    }
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    teachers = await db.collection("teachers").find({}).toArray();
+  } catch (error) {
+    console.log("Teachers collection not found or empty");
+  }
 
   // Sort teachers: Head of Department first (using isHOD flag), then others
   const sortedTeachers = [...teachers].sort((a, b) => {
@@ -29,7 +37,7 @@ export default async function TeachersPage() {
   });
 
   // Separate HOD from other teachers using isHOD flag
-  const hod = sortedTeachers.find(t => t.isHOD);
+  hod = sortedTeachers.find(t => t.isHOD);
   const otherTeachers = sortedTeachers.filter(t => !t.isHOD);
 
   return (

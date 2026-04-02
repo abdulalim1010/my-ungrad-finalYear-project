@@ -1,9 +1,16 @@
 
 import ViewCounter from "@/app/components/ViewCounter";
 import { clientPromise } from "@/lib/mongodb";
+
+export const dynamic = 'force-dynamic';
+
 export default async function SingleNews({ params }) {
   // ✅ Next.js 16 requires await
   const { slug } = await params;
+
+  if (!clientPromise) {
+    return <div className="p-10 text-center">Database not configured</div>;
+  }
 
   const client = await clientPromise;
   const db = client.db(process.env.MONGODB_DB || "department_portal");

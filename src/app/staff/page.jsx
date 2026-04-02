@@ -1,7 +1,6 @@
 import { clientPromise } from "@/lib/mongodb";
 import Link from "next/link";
 
-// Force dynamic rendering to prevent pre-rendering errors
 export const dynamic = 'force-dynamic';
 
 export default async function StaffPage() {
@@ -9,6 +8,9 @@ export default async function StaffPage() {
   let registrar = null;
   
   try {
+    if (!clientPromise) {
+      throw new Error("Database not configured");
+    }
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "department_portal");
     const allStaff = await db.collection("staff").find({}).toArray();

@@ -1,19 +1,26 @@
 import { clientPromise } from "@/lib/mongodb";
 import Link from "next/link";
 
-// Force dynamic rendering to prevent pre-rendering errors
-// This ensures MongoDB connection happens at request time, not build time
 export const dynamic = 'force-dynamic';
 
 export default async function GalleryPage() {
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || "department_portal");
+  let items = [];
+  
+  try {
+    if (!clientPromise) {
+      throw new Error("Database not configured");
+    }
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "department_portal");
 
-  const items = await db
-    .collection("student_gallery")
-    .find({ status: "approved" })
-    .sort({ createdAt: -1 })
-    .toArray();
+    items = await db
+      .collection("student_gallery")
+      .find({ status: "approved" })
+      .sort({ createdAt: -1 })
+      .toArray();
+  } catch (error) {
+    console.log("Gallery collection not found or empty");
+  }
 
   return (
     <div className="w-full bg-gradient-to-b from-blue-50 to-white py-24">

@@ -4,8 +4,10 @@ import { MongoClient } from "mongodb";
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || "departmentDB";
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
+const isServerRuntime = typeof window === "undefined" && process.env.NODE_ENV !== "production";
+
+if (!MONGODB_URI && isServerRuntime) {
+  console.warn("Warning: MONGODB_URI environment variable is not set");
 }
 
 /**
@@ -20,6 +22,10 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  if (!MONGODB_URI) {
+    return null;
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -51,6 +57,10 @@ async function dbConnect() {
 let mongoClientPromise = null;
 
 async function getClient() {
+  if (!MONGODB_URI) {
+    return null;
+  }
+
   if (typeof window !== "undefined") {
     throw new Error("Please use the server-side version of this function");
   }
@@ -60,7 +70,7 @@ async function getClient() {
   return client.connect();
 }
 
-const clientPromise = getClient();
+const clientPromise = MONGODB_URI ? getClient() : null;
 
 // Export Payment model
 const PaymentSchema = new mongoose.Schema({
