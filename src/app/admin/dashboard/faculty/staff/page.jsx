@@ -51,11 +51,7 @@ export default function StaffManagementPage() {
         return 0;
       });
       
-      // Separate registrar from other staff
-      const registrar = sortedStaff.find(t => t.isRegister);
-      const otherStaff = sortedStaff.filter(t => !t.isRegister);
-      
-      setStaff(otherStaff); // Show others in grid
+      setStaff(sortedStaff); // Show ALL staff including registrar in grid
     } catch (error) {
       console.error("Error fetching staff:", error);
     } finally {
@@ -67,7 +63,7 @@ export default function StaffManagementPage() {
     e.preventDefault();
     try {
       const url = editingStaff 
-        ? `/api/staff?id=${editingStaff._id}`
+        ? `/api/staff?id=${editingStaff._id.toString()}`
         : "/api/staff";
       
       const method = editingStaff ? "PUT" : "POST";
@@ -188,7 +184,7 @@ export default function StaffManagementPage() {
               className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-transparent hover:border-emerald-400 transition-all hover:shadow-xl"
             >
               {/* Header with gradient */}
-              <div className="h-20 bg-gradient-to-r from-emerald-600 to-teal-600" />
+              <div className={`h-20 ${member.isRegister ? 'bg-gradient-to-r from-amber-500 to-amber-600' : 'bg-gradient-to-r from-emerald-600 to-teal-600'}`} />
 
               {/* Profile Image */}
               <div className="relative px-6">
@@ -207,6 +203,11 @@ export default function StaffManagementPage() {
 
               {/* Content */}
               <div className="pt-14 pb-6 px-6 text-center">
+                {member.isRegister && (
+                  <span className="inline-block mb-2 px-3 py-1 rounded-full bg-amber-400 text-white text-xs font-bold">
+                    REGISTRAR
+                  </span>
+                )}
                 <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
                 <p className="text-emerald-600 font-medium mt-1">{member.designation}</p>
                 <p className="text-gray-500 text-sm mt-1">{member.department}</p>

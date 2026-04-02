@@ -73,7 +73,7 @@ export default async function StaffPage() {
             {registrar && (
               <div className="mb-16">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-gray-800">Registrar</h2>
+                  <h2 className="text-3xl font-bold text-gray-800">All Member of the Offical Staff</h2>
                   <div className="h-1 w-24 bg-gradient-to-r from-amber-500 to-amber-600 mx-auto mt-2"></div>
                 </div>
                 <div className="flex justify-center">
