@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Users, Plus, Edit2, Trash2, X, Search } from "lucide-react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function StaffManagementPage() {
   const [staff, setStaff] = useState([]);
@@ -75,21 +76,22 @@ export default function StaffManagementPage() {
       });
 
       if (res.ok) {
-        alert(editingStaff ? "Staff updated successfully!" : "Staff member added successfully!");
+        showSuccess(editingStaff ? "Staff updated successfully!" : "Staff member added successfully!");
         setShowModal(false);
         resetForm();
         fetchStaff();
       } else {
-        alert("Failed to save staff");
+        showError("Failed to save staff");
       }
     } catch (error) {
       console.error("Error saving staff:", error);
-      alert("Error saving staff");
+      showError("Error saving staff");
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this staff member?")) return;
+    const result = await showDeleteConfirm("Delete Staff", "Are you sure you want to delete this staff member?");
+    if (!result.isConfirmed) return;
     
     try {
       const res = await fetch(`/api/staff?id=${id}`, {
@@ -97,10 +99,10 @@ export default function StaffManagementPage() {
       });
       
       if (res.ok) {
-        alert("Staff member deleted successfully!");
+        showSuccess("Staff member deleted successfully!");
         fetchStaff();
       } else {
-        alert("Failed to delete staff");
+        showError("Failed to delete staff");
       }
     } catch (error) {
       console.error("Error deleting staff:", error);

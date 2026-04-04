@@ -1,6 +1,7 @@
 "use client";
 
 import StudentForm from "../components/StudentForm";
+import { showSuccess, showError } from "@/utils/swal";
 
 export default function PublicStudentsPage() {
   const handleFormSubmit = async (data) => {
@@ -13,10 +14,10 @@ export default function PublicStudentsPage() {
 
       if (!res.ok) throw new Error("Failed to submit data");
 
-      alert("Your information has been submitted successfully!");
+      showSuccess("Your information has been submitted successfully!");
     } catch (err) {
       console.error(err);
-      alert("Something went wrong. Please try again.");
+      showError("Something went wrong. Please try again.");
     }
   };
 

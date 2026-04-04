@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { GraduationCap, Plus, Edit2, Trash2, Globe, Award, X, Check, Search } from "lucide-react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function TeachersManagementPage() {
   const [teachers, setTeachers] = useState([]);
@@ -60,21 +61,22 @@ export default function TeachersManagementPage() {
       });
 
       if (res.ok) {
-        alert(editingTeacher ? "Teacher updated successfully!" : "Teacher added successfully!");
+        showSuccess(editingTeacher ? "Teacher updated successfully!" : "Teacher added successfully!");
         setShowModal(false);
         resetForm();
         fetchTeachers();
       } else {
-        alert("Failed to save teacher");
+        showError("Failed to save teacher");
       }
     } catch (error) {
       console.error("Error saving teacher:", error);
-      alert("Error saving teacher");
+      showError("Error saving teacher");
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this teacher?")) return;
+    const result = await showDeleteConfirm("Delete Teacher", "Are you sure you want to delete this teacher?");
+    if (!result.isConfirmed) return;
     
     try {
       const res = await fetch(`/api/teachers?id=${id}`, {
@@ -82,10 +84,10 @@ export default function TeachersManagementPage() {
       });
       
       if (res.ok) {
-        alert("Teacher deleted successfully!");
+        showSuccess("Teacher deleted successfully!");
         fetchTeachers();
       } else {
-        alert("Failed to delete teacher");
+        showError("Failed to delete teacher");
       }
     } catch (error) {
       console.error("Error deleting teacher:", error);

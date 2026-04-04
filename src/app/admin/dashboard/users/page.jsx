@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Users, UserCheck, Shield, Mail, Loader2, Edit } from "lucide-react";
+import { showSuccess, showError } from "@/utils/swal";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -48,10 +49,11 @@ export default function UsersPage() {
         throw new Error("Failed to update role");
       }
 
+      showSuccess("Role updated successfully");
       await fetchUsers(); // refresh list
     } catch (error) {
       console.error(error);
-      alert("Role update failed");
+      showError("Role update failed");
     } finally {
       setUpdatingId(null);
     }

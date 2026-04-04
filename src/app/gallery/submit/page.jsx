@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { showSuccess } from "@/utils/swal";
 
 const thisYear = new Date().getFullYear();
 const startYears = Array.from({ length: 25 }, (_, i) => thisYear - i); // From current year to 25 years ago
@@ -22,7 +23,7 @@ export default function SubmitGallery() {
     });
 
     setLoading(false);
-    alert("Submitted successfully! Waiting for admin approval.");
+    showSuccess("Submitted successfully! Waiting for admin approval.");
     router.push("/gallery");
   }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Plus, Trash2, Loader2, AlertCircle, CheckCircle, Calendar, Users } from "lucide-react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function PublicationsPage() {
   const [items, setItems] = useState([]);
@@ -72,7 +73,8 @@ export default function PublicationsPage() {
   };
 
   const del = async (id) => {
-    if (!confirm("Are you sure you want to delete this publication?")) return;
+    const result = await showDeleteConfirm("Delete Publication", "Are you sure you want to delete this publication?");
+    if (!result.isConfirmed) return;
 
     setLoading(true);
     try {
@@ -82,9 +84,10 @@ export default function PublicationsPage() {
         body: JSON.stringify({ id }),
       });
       if (!res.ok) throw new Error("Failed to delete publication");
+      showSuccess("Publication deleted successfully");
       load();
     } catch (e) {
-      alert("Failed to delete publication");
+      showError("Failed to delete publication");
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Bell, Upload, Edit, Trash2, X, CheckCircle, AlertCircle, FileText, Calendar } from "lucide-react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function AdminNoticePage() {
   const [notices, setNotices] = useState([]);
@@ -136,9 +137,10 @@ export default function AdminNoticePage() {
       });
 
       if (!res.ok) throw new Error("Failed to delete notice");
+      showSuccess("Notice deleted successfully");
       loadNotices();
     } catch (err) {
-      alert("Failed to delete notice. Please try again.");
+      showError("Failed to delete notice. Please try again.");
     }
   };
 

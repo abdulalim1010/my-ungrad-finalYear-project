@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Target, Plus, Trash2, Loader2, AlertCircle } from "lucide-react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function AdminResearchAreas() {
   const [areas, setAreas] = useState([]);
@@ -71,9 +72,10 @@ export default function AdminResearchAreas() {
       });
 
       if (!res.ok) throw new Error("Failed to delete area");
+      showSuccess("Area deleted successfully");
       fetchAreas();
     } catch (err) {
-      alert("Failed to delete area");
+      showError("Failed to delete area");
     } finally {
       setLoading(false);
     }

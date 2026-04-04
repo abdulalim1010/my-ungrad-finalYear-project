@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { showSuccess, showError, showWarning } from "@/utils/swal";
 
 export default function AcademicUploadPage() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
-    if (!file) return alert("Select a file");
+    if (!file) return showWarning("Select a file");
 
     // 🔥 HARD LIMIT (important)
     const maxSize = 8 * 1024 * 1024; // 8MB
     if (file.size > maxSize) {
-      return alert("File must be under 8MB");
+      return showWarning("File must be under 8MB");
     }
 
     const reader = new FileReader();
@@ -38,10 +39,10 @@ export default function AcademicUploadPage() {
         const result = await res.json();
         if (!res.ok) throw new Error(result.error);
 
-        alert("Upload successful");
+        showSuccess("Upload successful");
         setFile(null);
       } catch (err) {
-        alert(err.message);
+        showError(err.message);
       } finally {
         setLoading(false);
       }

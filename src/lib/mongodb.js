@@ -100,8 +100,10 @@ const PaymentSchema = new mongoose.Schema({
   },
 });
 
+import Settings from "@/models/Settings";
+
 const Payment = mongoose.models.Payment || mongoose.model("Payment", PaymentSchema);
 
-export { dbConnect, clientPromise, Payment };
+export { dbConnect, clientPromise, Payment, Settings };
 export default dbConnect;
 

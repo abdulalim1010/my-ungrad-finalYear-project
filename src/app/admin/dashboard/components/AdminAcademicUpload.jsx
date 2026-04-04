@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function AdminAcademicUpload({ type: fixedType }) {
   const [type, setType] = useState(fixedType || "note");
@@ -39,7 +40,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
     e.preventDefault();
 
     if (!file || !subject) {
-      alert("Subject & file required");
+      showWarning("Subject & file required");
       return;
     }
 
@@ -49,7 +50,7 @@ export default function AdminAcademicUpload({ type: fixedType }) {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("❌ Only PDF or DOCX allowed");
+      showError("Only PDF or DOCX allowed");
       return;
     }
 
@@ -65,19 +66,19 @@ export default function AdminAcademicUpload({ type: fixedType }) {
 
       const res = await fetch("/api/academic", {
         method: "POST",
-        body: formData, // ✅ multipart (Vercel safe)
+        body: formData,
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      alert("✅ Uploaded successfully");
+      showSuccess("Uploaded successfully");
       setFile(null);
       setSubject("");
       loadUploadedFiles();
     } catch (err) {
       console.error(err);
-      alert("❌ Upload failed");
+      showError("Upload failed");
     } finally {
       setLoading(false);
     }
@@ -85,7 +86,8 @@ export default function AdminAcademicUpload({ type: fixedType }) {
 
   /* ================= DELETE ================= */
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure?")) return;
+    const result = await showDeleteConfirm("Delete File", "Are you sure you want to delete this file?");
+    if (!result.isConfirmed) return;
 
     await fetch("/api/academic", {
       method: "DELETE",

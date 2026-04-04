@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function AdminStudentsPage() {
   const [savedData, setSavedData] = useState([]);
@@ -14,7 +15,8 @@ export default function AdminStudentsPage() {
 
   /* ================= DELETE STUDENT ================= */
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this student?")) return;
+    const result = await showDeleteConfirm("Delete Student", "Are you sure you want to delete this student?");
+    if (!result.isConfirmed) return;
     
     try {
       setDeleting(id);
@@ -27,10 +29,10 @@ export default function AdminStudentsPage() {
       if (!res.ok) throw new Error("Failed to delete");
 
       setSavedData((prev) => prev.filter((s) => s._id !== id));
-      alert("Student deleted successfully");
+      showSuccess("Student deleted successfully");
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Failed to delete student");
+      showError("Failed to delete student");
     } finally {
       setDeleting(null);
     }

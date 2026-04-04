@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FlaskConical, Plus, Trash2, Loader2, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
 
 export default function ProjectsPage() {
   const [items, setItems] = useState([]);
@@ -62,7 +63,8 @@ export default function ProjectsPage() {
   };
 
   const del = async (id) => {
-    if (!confirm("Are you sure you want to delete this project?")) return;
+    const result = await showDeleteConfirm("Delete Project", "Are you sure you want to delete this project?");
+    if (!result.isConfirmed) return;
 
     try {
       setLoading(true);
@@ -73,9 +75,10 @@ export default function ProjectsPage() {
       });
 
       if (!res.ok) throw new Error("Failed to delete project");
+      showSuccess("Project deleted successfully");
       load();
     } catch (err) {
-      alert("Failed to delete project");
+      showError("Failed to delete project");
     } finally {
       setLoading(false);
     }
