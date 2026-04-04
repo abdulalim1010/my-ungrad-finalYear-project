@@ -10,11 +10,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Create a shared Firebase app instance
-const firebaseApp = getApps().length === 0 
-  ? (typeof window !== 'undefined' ? initializeApp(firebaseConfig) : null)
-  : getApps()[0];
+let firebaseApp = null;
+let auth = null;
 
-// Export auth - will be null during SSR/build time, but valid on client
-export const auth = firebaseApp ? getAuth(firebaseApp) : null;
+if (typeof window !== 'undefined') {
+  firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  if (firebaseApp) {
+    auth = getAuth(firebaseApp);
+  }
+}
+
+export { firebaseApp, auth };
 export default firebaseApp;

@@ -9,6 +9,10 @@ export default function useUser() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
     const unsub = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
