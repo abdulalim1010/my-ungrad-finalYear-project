@@ -40,14 +40,15 @@ export async function POST(req) {
     const formData = await req.formData();
 
     const name = formData.get("name");
-    const batch = formData.get("batch");
-    const designation = formData.get("designation");
+    const session = formData.get("session");
+    const universityBatch = formData.get("universityBatch");
+    const departmentBatch = formData.get("departmentBatch");
     const company = formData.get("company");
     const photo = formData.get("photo");
 
-    if (!name || !batch || !photo) {
+    if (!name || !session || !universityBatch || !departmentBatch || !photo) {
       return NextResponse.json(
-        { message: "Name, Batch and Photo are required" },
+        { message: "Name, Session, University Batch, Department Batch and Photo are required" },
         { status: 400 }
       );
     }
@@ -73,8 +74,9 @@ export async function POST(req) {
 
     await db.collection("passed_students").insertOne({
       name,
-      batch,
-      designation: designation || "",
+      session,
+      universityBatch,
+      departmentBatch,
       company: company || "",
       photoUrl: uploadResult.secure_url,
       status: "pending",

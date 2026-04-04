@@ -11,15 +11,16 @@ export async function POST(req) {
     const formData = await req.formData();
 
     const name = formData.get("name");
-    const batch = formData.get("batch");
-    const designation = formData.get("designation");
+    const session = formData.get("session");
+    const universityBatch = formData.get("universityBatch");
+    const departmentBatch = formData.get("departmentBatch");
     const company = formData.get("company");
     const linkedin = formData.get("linkedin");
     const image = formData.get("image");
 
-    if (!name || !batch || !image) {
+    if (!name || !session || !universityBatch || !departmentBatch || !image) {
       return NextResponse.json(
-        { message: "Name, batch, and image are required" },
+        { message: "Name, Session, University Batch, Department Batch, and image are required" },
         { status: 400 }
       );
     }
@@ -42,12 +43,13 @@ export async function POST(req) {
 
     await db.collection("passed_students").insertOne({
       name,
-      batch,
-      designation: designation || "",
+      session,
+      universityBatch,
+      departmentBatch,
       company: company || "",
       linkedin: linkedin || "",
       photoUrl: uploadResult.secure_url,
-      status: "approved", // Admin directly adds as approved
+      status: "approved",
       createdAt: new Date(),
     });
 

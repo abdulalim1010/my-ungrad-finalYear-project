@@ -57,39 +57,74 @@ export default function PassedStudentSubmit() {
           />
         </div>
 
-        {/* BATCH */}
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">
-            Batch
-          </label>
-          <input
-            name="batch"
-            required
-            placeholder="e.g. 2019–2023"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-green-500
-                       focus:border-green-500 text-gray-800"
-          />
+        {/* BATCH - Session & Year */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Session
+            </label>
+            <select
+              name="session"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl
+                         focus:outline-none focus:ring-2 focus:ring-green-500
+                         focus:border-green-500 text-gray-800 bg-white"
+            >
+              <option value="">Select Session</option>
+              {Array.from({ length: 24 }, (_, i) => {
+                const year = 2012 + i;
+                return (
+                  <option key={year} value={`${year}-${year + 1}`}>
+                    {year}-{year + 1}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              University Batch
+            </label>
+            <select
+              name="universityBatch"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl
+                         focus:outline-none focus:ring-2 focus:ring-green-500
+                         focus:border-green-500 text-gray-800 bg-white"
+            >
+              <option value="">Select Batch</option>
+              {Array.from({ length: 80 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  Batch {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Department Batch
+            </label>
+            <select
+              name="departmentBatch"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl
+                         focus:outline-none focus:ring-2 focus:ring-green-500
+                         focus:border-green-500 text-gray-800 bg-white"
+            >
+              <option value="">Select Batch</option>
+              {Array.from({ length: 80 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  Batch {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* DESIGNATION */}
+        {/* COMPANY - Optional */}
         <div>
           <label className="block mb-1 text-sm font-medium text-gray-700">
-            Designation
-          </label>
-          <input
-            name="designation"
-            placeholder="e.g. Electrical Engineer"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-green-500
-                       focus:border-green-500 text-gray-800"
-          />
-        </div>
-
-        {/* COMPANY */}
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">
-            Company / Organization
+            Company / Organization <span className="text-gray-400">(Optional)</span>
           </label>
           <input
             name="company"

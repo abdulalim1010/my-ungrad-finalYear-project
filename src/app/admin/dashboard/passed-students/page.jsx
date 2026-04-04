@@ -188,11 +188,12 @@ export default function AdminPassedStudentsPage() {
               />
             </div>
             <h2 className="text-lg font-semibold text-center mt-3">{s.name}</h2>
-            <p className="text-center text-sm text-gray-500">Batch: {s.batch || "N/A"}</p>
-            
-            {s.designation && (
-              <p className="text-center text-sm text-blue-600 mt-1">{s.designation}</p>
-            )}
+            <p className="text-center text-sm text-gray-500">
+              Session: {s.session || "N/A"}
+            </p>
+            <p className="text-center text-sm text-gray-500">
+              University Batch: {s.universityBatch || "N/A"} | Dept Batch: {s.departmentBatch || "N/A"}
+            </p>
             {s.company && (
               <p className="text-center text-sm text-gray-500">@ {s.company}</p>
             )}

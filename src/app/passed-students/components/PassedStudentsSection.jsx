@@ -178,11 +178,11 @@ const gradients = [
                 </h3>
 
                 <p className="text-gray-300 text-sm">
-                  Batch {s.batch}
+                  Session: {s.session}
                 </p>
 
                 <p className="text-indigo-300 text-sm mt-1">
-                  {s.designation || "Graduate"}
+                  University Batch: {s.universityBatch} | Dept Batch: {s.departmentBatch}
                 </p>
 
                 <p className="text-gray-400 text-xs italic">
@@ -237,11 +237,11 @@ const gradients = [
               </h3>
 
               <p className="text-center text-lg mt-2">
-                Batch: {expandedCard.batch}
+                Session: {expandedCard.session}
               </p>
 
-              <p className="text-center mt-2">
-                {expandedCard.designation}
+              <p className="text-center mt-2 text-indigo-300">
+                University Batch: {expandedCard.universityBatch} | Dept Batch: {expandedCard.departmentBatch}
               </p>
 
               <p className="text-center italic text-gray-300">

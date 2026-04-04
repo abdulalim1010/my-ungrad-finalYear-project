@@ -7,8 +7,9 @@ export default function AddPassedStudentForm({ onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    batch: "",
-    designation: "",
+    session: "",
+    universityBatch: "",
+    departmentBatch: "",
     company: "",
     linkedin: "",
     image: null,
@@ -33,8 +34,9 @@ export default function AddPassedStudentForm({ onClose, onSuccess }) {
     try {
       const data = new FormData();
       data.append("name", formData.name);
-      data.append("batch", formData.batch);
-      data.append("designation", formData.designation);
+      data.append("session", formData.session);
+      data.append("universityBatch", formData.universityBatch);
+      data.append("departmentBatch", formData.departmentBatch);
       data.append("company", formData.company);
       data.append("linkedin", formData.linkedin);
       if (formData.image) {
@@ -92,61 +94,96 @@ export default function AddPassedStudentForm({ onClose, onSuccess }) {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Batch/Graduation Year *
-              </label>
-              <input
-                type="text"
-                name="batch"
-                value={formData.batch}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., 2020, 2019-2020"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Session *
+                </label>
+                <select
+                  name="session"
+                  value={formData.session}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="">Select Session</option>
+                  {Array.from({ length: 24 }, (_, i) => {
+                    const year = 2012 + i;
+                    return (
+                      <option key={year} value={`${year}-${year + 1}`}>
+                        {year}-{year + 1}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  University Batch *
+                </label>
+                <select
+                  name="universityBatch"
+                  value={formData.universityBatch}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="">Select Batch</option>
+                  {Array.from({ length: 80 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      Batch {i + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Department Batch *
+                </label>
+                <select
+                  name="departmentBatch"
+                  value={formData.departmentBatch}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="">Select Batch</option>
+                  {Array.from({ length: 80 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      Batch {i + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Current Designation
-              </label>
-              <input
-                type="text"
-                name="designation"
-                value={formData.designation}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., Software Engineer"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Company/Organization
-              </label>
-              <input
-                type="text"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., Google, BRAC University"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                LinkedIn Profile
-              </label>
-              <input
-                type="url"
-                name="linkedin"
-                value={formData.linkedin}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://linkedin.com/in/..."
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Company/Organization <span className="text-gray-400">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., Google, BRAC University"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  LinkedIn Profile <span className="text-gray-400">(Optional)</span>
+                </label>
+                <input
+                  type="url"
+                  name="linkedin"
+                  value={formData.linkedin}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="https://linkedin.com/in/..."
+                />
+              </div>
             </div>
 
             <div>
