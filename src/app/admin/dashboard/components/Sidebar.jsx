@@ -13,6 +13,8 @@ import {
   FileText,
   GraduationCap,
   UserCog,
+  Calendar,
+  Newspaper,
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/components/firebase";
@@ -104,6 +106,21 @@ const menu = [
     href: "/admin/dashboard/notice",
     icon: Bell,
   },
+
+  /* ================= EVENTS ================= */
+  {
+    name: "Events",
+    href: "/admin/dashboard/events",
+    icon: Calendar,
+  },
+
+  /* ================= NEWS ================= */
+  {
+    name: "News",
+    href: "/admin/dashboard/news",
+    icon: Newspaper,
+  },
+
   {
     name: "Settings",
     href: "/admin/dashboard/settings",

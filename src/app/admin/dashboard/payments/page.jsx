@@ -9,10 +9,11 @@ export default function AdminPaymentsPage() {
   const [payments, setPayments] = useState([]);
   const [search, setSearch] = useState("");
   const [settings, setSettings] = useState({
-    sectionTitle: "Money Collection",
+    sectionTitle: "💳 Support My Work",
     buttonText: "Pay Now",
     buttonEnabled: true,
-    paymentDescription: "Pay your semester fees securely via SSLCommerz",
+    paymentDescription: "If you find my work helpful or want to support my journey as a developer, you can contribute here. Your support helps me continue learning, building projects, and creating better content. Every contribution means a lot ❤️",
+    extraInfo: "(For project support / personal donation / course fee / etc.)"
   });
   const [editSettings, setEditSettings] = useState(false);
   const [tempSettings, setTempSettings] = useState(settings);
@@ -36,7 +37,7 @@ export default function AdminPaymentsPage() {
         data.forEach(s => {
           loaded[s.key] = s.value;
         });
-        if (loaded.sectionTitle || loaded.buttonText || loaded.buttonEnabled || loaded.paymentDescription) {
+        if (Object.keys(loaded).length > 0) {
           setSettings(prev => ({ ...prev, ...loaded }));
           setTempSettings(prev => ({ ...prev, ...loaded }));
         }
@@ -141,10 +142,19 @@ export default function AdminPaymentsPage() {
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm text-green-100 mb-1">Description</label>
-                <input
-                  type="text"
+                <textarea
                   value={tempSettings.paymentDescription}
                   onChange={(e) => setTempSettings({ ...tempSettings, paymentDescription: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg bg-white/20 text-white placeholder-green-200 border border-white/30 focus:outline-none focus:border-white"
+                  rows={2}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm text-green-100 mb-1">Extra Info (optional)</label>
+                <input
+                  type="text"
+                  value={tempSettings.extraInfo || ""}
+                  onChange={(e) => setTempSettings({ ...tempSettings, extraInfo: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg bg-white/20 text-white placeholder-green-200 border border-white/30 focus:outline-none focus:border-white"
                 />
               </div>

@@ -10,21 +10,25 @@ export async function POST(request) {
   await dbConnect();
   const body = await request.json();
   
-  const { key, value } = body;
-  
-  if (!key || value === undefined) {
-    return Response.json({ error: "Key and value are required" }, { status: 400 });
+  if (typeof body !== "object" || !body) {
+    return Response.json({ error: "Invalid request body" }, { status: 400 });
   }
   
-  const existing = await Settings.findOne({ key });
+  const results = [];
   
-  if (existing) {
-    existing.value = value;
-    existing.updatedAt = new Date();
-    await existing.save();
-    return Response.json(existing);
+  for (const [key, value] of Object.entries(body)) {
+    const existing = await Settings.findOne({ key });
+    
+    if (existing) {
+      existing.value = value;
+      existing.updatedAt = new Date();
+      await existing.save();
+      results.push(existing);
+    } else {
+      const newSetting = await Settings.create({ key, value });
+      results.push(newSetting);
+    }
   }
   
-  const newSetting = await Settings.create({ key, value });
-  return Response.json(newSetting);
+  return Response.json({ success: true, results });
 }

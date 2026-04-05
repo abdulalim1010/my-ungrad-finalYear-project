@@ -4,13 +4,11 @@ import Image from "next/image";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import useUser from "@/hooks/useUser";
 
 export default function PassedStudentsSection() {
   const [students, setStudents] = useState([]);
   const [expandedCard, setExpandedCard] = useState(null);
   const controls = useAnimation();
-  const { user, loading } = useUser();
 
   useEffect(() => {
     fetch("/api/passed-students?status=approved")
@@ -77,11 +75,10 @@ export default function PassedStudentsSection() {
           </div>
 
           {/* 🔥 UPDATED BUTTON DESIGN */}
-          {!loading && user && (
-            <Link href="/passed-students/submit">
-              <motion.button
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
+          <Link href="/passed-students/submit">
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
                 className="
                   relative px-8 py-4 rounded-full
                   bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600
@@ -96,7 +93,6 @@ export default function PassedStudentsSection() {
                 </span>
               </motion.button>
             </Link>
-          )}
 
         </div>
       </motion.div>
