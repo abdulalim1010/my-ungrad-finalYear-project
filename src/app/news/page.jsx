@@ -129,6 +129,7 @@ export default function NewsPage() {
                       src={item.image}
                       alt={item.title}
                       fill
+                      unoptimized
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                   ) : (

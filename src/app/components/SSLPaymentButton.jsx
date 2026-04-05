@@ -1,6 +1,6 @@
 "use client";
 
-import { showError, showWarning, showSuccess } from "@/utils/swal";
+import { showError, showWarning } from "@/utils/swal";
 import { useEffect, useState } from "react";
 
 export default function SSLPaymentButton() {
@@ -13,13 +13,15 @@ export default function SSLPaymentButton() {
     fetch("/api/settings")
       .then(res => res.json())
       .then(data => {
-        const loaded = {};
-        data.forEach(s => loaded[s.key] = s.value);
-        if (loaded.buttonEnabled !== undefined || loaded.buttonText) {
-          setSettings(prev => ({ ...prev, ...loaded }));
+        if (Array.isArray(data)) {
+          const loaded = {};
+          data.forEach(s => loaded[s.key] = s.value);
+          if (loaded.buttonEnabled !== undefined || loaded.buttonText) {
+            setSettings(prev => ({ ...prev, ...loaded }));
+          }
         }
       })
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
   const handlePayment = async () => {

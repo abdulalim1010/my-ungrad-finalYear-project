@@ -5,11 +5,8 @@ import SSLPaymentButton from "./SSLPaymentButton";
 import { useEffect, useState } from "react";
 
 export default function PaymentSection() {
-  const [settings, setSettings] = useState({
-    sectionTitle: "💳 Support My Work",
-    paymentDescription: "If you find my work helpful or want to support my journey as a developer, you can contribute here. Your support helps me continue learning, building projects, and creating better content. Every contribution means a lot ❤️",
-    extraInfo: "(For project support / personal donation / course fee / etc.)"
-  });
+  const [settings, setSettings] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -17,12 +14,27 @@ export default function PaymentSection() {
       .then(data => {
         const loaded = {};
         data.forEach(s => loaded[s.key] = s.value);
-        if (loaded.sectionTitle || loaded.paymentDescription) {
-          setSettings(prev => ({ ...prev, ...loaded }));
-        }
+        setSettings(loaded);
       })
-      .catch(console.error);
+      .catch(() => {
+        setSettings({});
+      })
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 px-4 bg-[#0f172a] text-[#e2e8f0]">
+        <div className="max-w-6xl mx-auto">
+          <div className="animate-pulse bg-gray-800 rounded-3xl h-64"></div>
+        </div>
+      </section>
+    );
+  }
+
+  const title = settings?.sectionTitle || "💳 Support My Work";
+  const description = settings?.paymentDescription || "If you find my work helpful or want to support my journey as a developer, you can contribute here. Your support helps me continue learning, building projects, and creating better content. Every contribution means a lot ❤️";
+  const extraInfo = settings?.extraInfo || "(For project support / personal donation / course fee / etc.)";
 
   return (
     <section className="py-20 px-4 bg-[#0f172a] text-[#e2e8f0]">
@@ -45,18 +57,18 @@ export default function PaymentSection() {
 
             {/* TITLE */}
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 text-center">
-              {settings.sectionTitle}
+              {title}
             </h2>
 
             {/* DESCRIPTION */}
             <p className="text-gray-300 max-w-2xl mx-auto mb-4 text-lg leading-relaxed text-center">
-              {settings.paymentDescription}
+              {description}
             </p>
 
             {/* OPTIONAL EXTRA INFO */}
-            {settings.extraInfo && (
+            {extraInfo && (
               <p className="text-sm text-gray-400 mb-8 text-center">
-                {settings.extraInfo}
+                {extraInfo}
               </p>
             )}
 

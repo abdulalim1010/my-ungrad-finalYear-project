@@ -4,37 +4,60 @@ import Image from "next/image";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Search } from "lucide-react";
 
 export default function PassedStudentsSection() {
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [expandedCard, setExpandedCard] = useState(null);
+  const [search, setSearch] = useState("");
   const controls = useAnimation();
 
   useEffect(() => {
     fetch("/api/passed-students?status=approved")
       .then(res => res.json())
-      .then(data => setStudents(Array.isArray(data) ? data : []));
+      .then(data => {
+        const studentData = Array.isArray(data) ? data : [];
+        setStudents(studentData);
+        setFilteredStudents(studentData);
+      });
   }, []);
 
   useEffect(() => {
-    if (students.length) {
+    if (search.trim() === "") {
+      setFilteredStudents(students);
+    } else {
+      const searchLower = search.toLowerCase();
+      const filtered = students.filter(s =>
+        s.name?.toLowerCase().includes(searchLower) ||
+        s.session?.toLowerCase().includes(searchLower) ||
+        s.universityBatch?.toLowerCase().includes(searchLower) ||
+        s.departmentBatch?.toLowerCase().includes(searchLower) ||
+        s.company?.toLowerCase().includes(searchLower)
+      );
+      setFilteredStudents(filtered);
+    }
+  }, [search, students]);
+
+  useEffect(() => {
+    if (filteredStudents.length) {
       controls.start({
         x: ["0%", "-50%"],
         transition: {
-          duration: students.length * 6,
+          duration: filteredStudents.length * 6,
           ease: "linear",
           repeat: Infinity,
         },
       });
     }
-  }, [students, controls]);
+  }, [filteredStudents, controls]);
 
   const pause = () => controls.stop();
   const resume = () => {
     controls.start({
       x: ["0%", "-50%"],
       transition: {
-        duration: students.length * 6,
+        duration: filteredStudents.length * 6,
         ease: "linear",
         repeat: Infinity,
       },
@@ -63,7 +86,7 @@ export default function PassedStudentsSection() {
         
         <div className="relative flex flex-col md:flex-row justify-between items-center p-8 md:p-12 gap-6">
           
-          {/* 🔥 UPDATED HEADING */}
+          {/* HEADING */}
           <div className="text-center md:text-left">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
               🎓 Our Successful Graduates
@@ -74,37 +97,52 @@ export default function PassedStudentsSection() {
             <div className="h-1 w-28 bg-white/60 rounded-full mt-4 mx-auto md:mx-0" />
           </div>
 
-          {/* 🔥 UPDATED BUTTON DESIGN */}
-          <Link href="/passed-students/submit">
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-                className="
-                  relative px-8 py-4 rounded-full
-                  bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600
-                  text-white font-semibold text-lg
-                  shadow-lg
-                  hover:shadow-2xl
-                  transition-all duration-300
-                "
+          {/* SEARCH BAR & ADD BUTTON */}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="text"
+                placeholder="Search graduates..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 pr-10 py-3 rounded-full bg-white/20 backdrop-blur text-white placeholder-gray-300 border border-white/30 focus:outline-none focus:border-white w-64"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <Link href="/passed-students/submit">
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative px-8 py-4 rounded-full bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white font-semibold text-lg shadow-lg hover:shadow-2xl transition-all duration-300"
               >
-                <span className="flex items-center gap-2">
-                  ✨ Add Student Info
-                </span>
+                <span className="flex items-center gap-2">✨ Add Student Info</span>
               </motion.button>
             </Link>
-
+          </div>
         </div>
       </motion.div>
 
       {/* SLIDER */}
-      <div
-        className="overflow-hidden"
-        onMouseEnter={pause}
-        onMouseLeave={resume}
-      >
-        <motion.div animate={controls} className="flex gap-8 w-max">
-          {[...students, ...students].map((s, i) => {
+      {filteredStudents.length === 0 && search ? (
+        <div className="text-center py-16">
+          <p className="text-gray-500 text-lg">No graduates found matching "{search}"</p>
+        </div>
+      ) : (
+        <div
+          className="overflow-hidden"
+          onMouseEnter={pause}
+          onMouseLeave={resume}
+        >
+          <motion.div animate={controls} className="flex gap-8 w-max">
+            {[...filteredStudents, ...filteredStudents].map((s, i) => {
 
             const gradient = gradients[i % gradients.length];
 
@@ -128,10 +166,11 @@ export default function PassedStudentsSection() {
               >
 
                 <Image
-                  src={s.photoUrl}
+                  src={s.photoUrl || "/placeholder-avatar.png"}
                   alt={s.name}
                   width={140}
                   height={140}
+                  onError={(e) => { e.target.src = "/placeholder-avatar.png"; }}
                   className="rounded-full border-4 border-white shadow-xl object-cover"
                 />
 
@@ -156,8 +195,9 @@ export default function PassedStudentsSection() {
           })}
         </motion.div>
       </div>
+      )}
 
-      {/* MODAL (unchanged) */}
+      {/* MODAL */}
       <AnimatePresence>
         {expandedCard && (
           <>
@@ -185,10 +225,11 @@ export default function PassedStudentsSection() {
             >
 
               <Image
-                src={expandedCard.photoUrl}
+                src={expandedCard.photoUrl || "/placeholder-avatar.png"}
                 alt=""
                 width={220}
                 height={220}
+                onError={(e) => { e.target.src = "/placeholder-avatar.png"; }}
                 className="mx-auto rounded-full border-4 border-white"
               />
 
