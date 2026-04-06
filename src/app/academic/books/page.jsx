@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { FileText, Filter, Download, Book } from "lucide-react";
+import { FileText, Filter, Download, Book, ExternalLink } from "lucide-react";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
@@ -119,21 +119,30 @@ export default function BooksPage() {
                     {book.semester ? `${book.semester} Semester` : ""}
                   </p>
 
-                  <span className="inline-block text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full mb-4">
-                    {book.fileType?.toUpperCase() || "BOOK"}
+                  <span className={`inline-block text-xs px-3 py-1 rounded-full mb-4 ${book.linkUrl ? "bg-green-100 text-green-700" : "bg-green-100 text-green-700"}`}>
+                    {book.linkUrl ? "External Link" : book.fileType?.toUpperCase() || "BOOK"}
                   </span>
 
-                  <a
-                    href={`/api/academic/download/${book._id}`}
-                    className="flex items-center justify-center gap-2
-                               bg-green-600 text-white
-                               px-4 py-2 rounded-lg
-                               hover:bg-green-700 transition text-sm"
-                    download={book.fileName}
-                  >
-                    <Download size={16} />
-                    Download
-                  </a>
+                  {book.linkUrl ? (
+                    <a
+                      href={book.linkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+                    >
+                      <ExternalLink size={16} />
+                      Open Link
+                    </a>
+                  ) : (
+                    <a
+                      href={`/api/academic/download/${book._id}`}
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+                      download={book.fileName}
+                    >
+                      <Download size={16} />
+                      Download
+                    </a>
+                  )}
                 </div>
               </div>
             ))}

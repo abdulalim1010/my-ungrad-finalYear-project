@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { FileText, Filter, Download, ClipboardList } from "lucide-react";
+import { FileText, Filter, Download, ClipboardList, ExternalLink } from "lucide-react";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
@@ -56,7 +56,7 @@ export default function PreviousQuestionsPage() {
             Previous Questions
           </h1>
           <p className="text-gray-600 mt-2">
-            Download previous exam questions (DOCX format)
+            Download previous exam questions or access external links
           </p>
         </div>
 
@@ -122,21 +122,30 @@ export default function PreviousQuestionsPage() {
                     {f.year} Year · {f.semester} Semester
                   </p>
 
-                  <span className="inline-block text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full mb-4">
-                    {f.fileType?.toUpperCase() || "DOCX"}
+                  <span className={`inline-block text-xs px-3 py-1 rounded-full mb-4 ${f.linkUrl ? "bg-green-100 text-green-700" : "bg-indigo-100 text-indigo-700"}`}>
+                    {f.linkUrl ? "External Link" : f.fileType?.toUpperCase() || "FILE"}
                   </span>
 
-                  <a
-                    href={`/api/academic/download/${f._id}`}
-                    className="flex items-center justify-center gap-2
-                               bg-indigo-600 text-white
-                               px-4 py-2 rounded-lg
-                               hover:bg-indigo-700 transition text-sm"
-                    download={f.fileName}
-                  >
-                    <Download size={16} />
-                    Download
-                  </a>
+                  {f.linkUrl ? (
+                    <a
+                      href={f.linkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+                    >
+                      <ExternalLink size={16} />
+                      Open Link
+                    </a>
+                  ) : (
+                    <a
+                      href={`/api/academic/download/${f._id}`}
+                      className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition text-sm"
+                      download={f.fileName}
+                    >
+                      <Download size={16} />
+                      Download
+                    </a>
+                  )}
                 </div>
               </div>
             ))}

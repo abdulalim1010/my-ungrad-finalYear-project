@@ -29,6 +29,36 @@ export async function GET(req) {
 /* ================= POST ================= */
 export async function POST(req) {
   try {
+    const contentType = req.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+      const body = await req.json();
+      const { subject, type, year, semester, linkUrl, fileType } = body;
+
+      if (!subject || !type || !year || !semester) {
+        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      }
+
+      if (!linkUrl) {
+        return NextResponse.json({ error: "Link URL is required" }, { status: 400 });
+      }
+
+      const client = await clientPromise;
+      const db = client.db(process.env.MONGODB_DB || "department_portal");
+
+      await db.collection("academic").insertOne({
+        subject,
+        type,
+        year,
+        semester,
+        linkUrl,
+        fileType: "link",
+        createdAt: new Date(),
+      });
+
+      return NextResponse.json({ ok: true, message: "Link added successfully" });
+    }
+
     const formData = await req.formData();
 
     const file = formData.get("file");
@@ -51,6 +81,14 @@ export async function POST(req) {
     const originalName = file.name;
     const fileExtension = originalName.split(".").pop().toLowerCase();
 
+    const allowedExtensions = ["pdf", "docx", "doc"];
+    if (!allowedExtensions.includes(fileExtension)) {
+      return NextResponse.json(
+        { error: "Only PDF or DOCX files are allowed" },
+        { status: 400 }
+      );
+    }
+
     // clean filename (no space, no extension)
     const cleanName = originalName
       .replace(/\.[^/.]+$/, "")
@@ -64,7 +102,7 @@ export async function POST(req) {
         .upload_stream(
           {
             folder: "academic-files",
-            resource_type: "raw", // PDF, DOCX, DOC → always raw
+            resource_type: "auto",
             public_id: `academic-${Date.now()}-${cleanName}`,
           },
           (err, result) => {
@@ -107,18 +145,35 @@ export async function POST(req) {
 /* ================= DELETE ================= */
 export async function DELETE(req) {
   try {
-    const { id } = await req.json();
+    const { id, adminEmail } = await req.json();
+
+    if (!adminEmail) {
+      return NextResponse.json(
+        { error: "Admin authentication required" },
+        { status: 401 }
+      );
+    }
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "department_portal");
+
+    const adminUser = await db.collection("users").findOne({ email: adminEmail });
+
+    if (!adminUser || adminUser.role !== "admin") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 403 }
+      );
+    }
 
     const file = await db
       .collection("academic")
       .findOne({ _id: new ObjectId(id) });
 
     if (file?.publicId) {
+      const resourceType = file.fileType === "link" ? "raw" : (file.fileType === "pdf" || file.fileType === "doc" || file.fileType === "docx" ? "raw" : "image");
       await cloudinary.uploader.destroy(file.publicId, {
-        resource_type: "raw",
+        resource_type: resourceType,
       });
     }
 

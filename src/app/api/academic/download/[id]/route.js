@@ -20,30 +20,33 @@ export async function GET(req, { params }) {
     let cloudinaryUrl = (file.downloadUrl || file.fileUrl).split("?")[0];
     
     // Fetch file from Cloudinary
-    let cloudRes = await fetch(cloudinaryUrl, {
-      headers: {
-        "Accept": "application/octet-stream",
-      },
-    });
+    let cloudRes = await fetch(cloudinaryUrl);
 
-    // If fetch fails with 401, try signed URL for raw files
+    // If fetch fails, try signed URL for document files
     if (!cloudRes.ok && file.publicId && ["pdf", "docx", "doc"].includes(file.fileType?.toLowerCase())) {
-      console.log("Trying signed URL for authenticated file...");
+      console.log("Cloudinary direct URL failed, trying signed URL with auto...");
       
-      // Generate signed URL that expires in 1 hour
+      // Use auto for new uploads
       const signedUrl = cloudinary.url(file.publicId, {
-        resource_type: "raw",
+        resource_type: "auto",
         type: "upload",
         sign_url: true,
         expires_at: Math.floor(Date.now() / 1000) + 3600,
       });
       
-      cloudinaryUrl = signedUrl;
-      cloudRes = await fetch(signedUrl, {
-        headers: {
-          "Accept": "application/octet-stream",
-        },
-      });
+      cloudRes = await fetch(signedUrl);
+      
+      // If auto fails, try raw for older uploads
+      if (!cloudRes.ok) {
+        console.log("Auto failed, trying raw...");
+        const rawSignedUrl = cloudinary.url(file.publicId, {
+          resource_type: "raw",
+          type: "upload",
+          sign_url: true,
+          expires_at: Math.floor(Date.now() / 1000) + 3600,
+        });
+        cloudRes = await fetch(rawSignedUrl);
+      }
     }
 
     if (!cloudRes.ok) {

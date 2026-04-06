@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { FileText, Download, Eye, Filter, BookOpen, Calendar } from "lucide-react";
+import { FileText, Download, Eye, Filter, BookOpen, Calendar, ExternalLink } from "lucide-react";
 
 const YEARS = ["1st", "2nd", "3rd", "4th"];
 const SEMESTERS = ["1st", "2nd"];
@@ -124,8 +124,8 @@ export default function ClassNotePage() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <FileText className="text-blue-600" size={20} />
-                    <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                      NOTE
+                    <span className={`text-xs font-semibold px-2 py-1 rounded ${f.linkUrl ? "bg-green-100 text-green-600" : "bg-blue-50 text-blue-600"}`}>
+                      {f.linkUrl ? "LINK" : "NOTE"}
                     </span>
                   </div>
                   <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
@@ -144,23 +144,37 @@ export default function ClassNotePage() {
                 </p>
 
                 <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-                  <a
-                    href={`/api/academic/download/${f._id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
-                  >
-                    <Eye size={16} />
-                    View PDF
-                  </a>
-                  <a
-                    href={`/api/academic/download/${f._id}`}
-                    download={f.fileName || `${f.subject}_${f.type}.pdf`}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
-                  >
-                    <Download size={16} />
-                    Download
-                  </a>
+                  {f.linkUrl ? (
+                    <a
+                      href={f.linkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
+                    >
+                      <ExternalLink size={16} />
+                      Open Link
+                    </a>
+                  ) : (
+                    <>
+                      <a
+                        href={`/api/academic/download/${f._id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+                      >
+                        <Eye size={16} />
+                        View PDF
+                      </a>
+                      <a
+                        href={`/api/academic/download/${f._id}`}
+                        download={f.fileName || `${f.subject}_${f.type}.pdf`}
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
+                      >
+                        <Download size={16} />
+                        Download
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
