@@ -115,70 +115,67 @@ export default function ClassNotePage() {
             </p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {files.map((f) => (
-              <div
-                key={f._id}
-                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-100"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <FileText className="text-blue-600" size={20} />
-                    <span className={`text-xs font-semibold px-2 py-1 rounded ${f.linkUrl ? "bg-green-100 text-green-600" : "bg-blue-50 text-blue-600"}`}>
-                      {f.linkUrl ? "LINK" : "NOTE"}
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    {f.year} Year
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {files.map((f) => (
+            <div
+              key={f._id}
+              className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border-t-4 border-blue-500"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <FileText className="text-blue-600" size={20} />
+                  <span className={`text-xs font-bold px-2 py-1 rounded ${f.linkUrl ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
+                    {f.linkUrl ? "LINK" : "NOTE"}
                   </span>
                 </div>
+                <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                  {f.year} Year
+                </span>
+              </div>
 
-                <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
-                  {f.title}
-                </h3>
-                <p className="text-sm text-gray-600 mb-1">
-                  <span className="font-medium">{f.subject}</span>
-                </p>
-                <p className="text-xs text-gray-500 mb-4">
-                  {f.semester} Semester
-                </p>
+              <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                {f.subject || f.title}
+              </h3>
+              <p className="text-sm font-semibold text-gray-700 mb-4">
+                {f.semester} Semester
+              </p>
 
-                <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-                  {f.linkUrl ? (
+              <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
+                {f.linkUrl ? (
+                  <a
+                    href={f.linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
+                  >
+                    <ExternalLink size={16} />
+                    Open Link
+                  </a>
+                ) : (
+                  <>
                     <a
-                      href={f.linkUrl}
+                      href={`/api/academic/download/${f._id}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+                    >
+                      <Eye size={16} />
+                      View PDF
+                    </a>
+                    <a
+                      href={`/api/academic/download/${f._id}`}
+                      download={f.fileName || `${f.subject}_${f.type}.pdf`}
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
                     >
-                      <ExternalLink size={16} />
-                      Open Link
+                      <Download size={16} />
+                      Download
                     </a>
-                  ) : (
-                    <>
-                      <a
-                        href={`/api/academic/download/${f._id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
-                      >
-                        <Eye size={16} />
-                        View PDF
-                      </a>
-                      <a
-                        href={`/api/academic/download/${f._id}`}
-                        download={f.fileName || `${f.subject}_${f.type}.pdf`}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition text-sm font-medium"
-                      >
-                        <Download size={16} />
-                        Download
-                      </a>
-                    </>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
         )}
       </div>
     </div>

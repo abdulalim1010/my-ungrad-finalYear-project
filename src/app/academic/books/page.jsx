@@ -107,28 +107,32 @@ export default function BooksPage() {
             {filteredBooks.map((book) => (
               <div
                 key={book._id}
-                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
+                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden border-t-4 border-green-500"
               >
                 <div className="p-6">
-                  <h3 className="font-semibold text-gray-800 mb-1">
-                    {book.title || book.subject}
+                  <div className="flex items-center gap-2 mb-3">
+                    <Book className="text-green-600" size={20} />
+                    <span className={`text-xs font-bold px-2 py-1 rounded ${book.linkUrl ? "bg-green-100 text-green-700" : "bg-green-100 text-green-700"}`}>
+                      {book.linkUrl ? "LINK" : "BOOK"}
+                    </span>
+                  </div>
+
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">
+                    {book.subject || book.title}
                   </h3>
 
-                  <p className="text-sm text-gray-500 mb-3">
-                    {book.year ? `${book.year} Year · ` : ""}
+                  <p className="text-sm font-semibold text-gray-700 mb-3">
+                    {book.year ? `${book.year} Year` : ""}
+                    {book.year && book.semester ? " • " : ""}
                     {book.semester ? `${book.semester} Semester` : ""}
                   </p>
-
-                  <span className={`inline-block text-xs px-3 py-1 rounded-full mb-4 ${book.linkUrl ? "bg-green-100 text-green-700" : "bg-green-100 text-green-700"}`}>
-                    {book.linkUrl ? "External Link" : book.fileType?.toUpperCase() || "BOOK"}
-                  </span>
 
                   {book.linkUrl ? (
                     <a
                       href={book.linkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-medium"
                     >
                       <ExternalLink size={16} />
                       Open Link
@@ -136,7 +140,7 @@ export default function BooksPage() {
                   ) : (
                     <a
                       href={`/api/academic/download/${book._id}`}
-                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-medium"
                       download={book.fileName}
                     >
                       <Download size={16} />

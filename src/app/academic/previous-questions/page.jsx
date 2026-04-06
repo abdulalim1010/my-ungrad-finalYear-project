@@ -111,27 +111,30 @@ export default function PreviousQuestionsPage() {
             {filteredFiles.map((f) => (
               <div
                 key={f._id}
-                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
+                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden border-t-4 border-indigo-500"
               >
                 <div className="p-6">
-                  <h3 className="font-semibold text-gray-800 mb-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <ClipboardList className="text-indigo-600" size={20} />
+                    <span className={`text-xs font-bold px-2 py-1 rounded ${f.linkUrl ? "bg-green-100 text-green-700" : "bg-indigo-100 text-indigo-700"}`}>
+                      {f.linkUrl ? "LINK" : "QUESTION"}
+                    </span>
+                  </div>
+
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">
                     {f.subject}
                   </h3>
 
-                  <p className="text-sm text-gray-500 mb-3">
-                    {f.year} Year · {f.semester} Semester
+                  <p className="text-sm font-semibold text-gray-700 mb-3">
+                    {f.year} Year • {f.semester} Semester
                   </p>
-
-                  <span className={`inline-block text-xs px-3 py-1 rounded-full mb-4 ${f.linkUrl ? "bg-green-100 text-green-700" : "bg-indigo-100 text-indigo-700"}`}>
-                    {f.linkUrl ? "External Link" : f.fileType?.toUpperCase() || "FILE"}
-                  </span>
 
                   {f.linkUrl ? (
                     <a
                       href={f.linkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm"
+                      className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-medium"
                     >
                       <ExternalLink size={16} />
                       Open Link
@@ -139,7 +142,7 @@ export default function PreviousQuestionsPage() {
                   ) : (
                     <a
                       href={`/api/academic/download/${f._id}`}
-                      className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition text-sm"
+                      className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition text-sm font-medium"
                       download={f.fileName}
                     >
                       <Download size={16} />

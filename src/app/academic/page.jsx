@@ -71,18 +71,17 @@ export default async function AcademicPage() {
             {files.map((f) => (
               <div
                 key={f._id}
-                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition"
+                className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border-t-4 border-blue-600"
               >
-                <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                  {f.type.toUpperCase()}
+                <span className="text-xs font-bold text-white bg-blue-600 px-3 py-1 rounded-full">
+                  {f.type?.toUpperCase() || "FILE"}
                 </span>
 
-                <h3 className="font-semibold text-gray-800 mt-3">
-                  {f.title}
+                <h3 className="font-bold text-xl text-gray-900 mt-3 mb-2">
+                  {f.subject || f.title}
                 </h3>
 
-                <p className="text-sm text-gray-600">{f.subject}</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-sm font-medium text-gray-700">
                   {f.year} Year • {f.semester} Semester
                 </p>
 

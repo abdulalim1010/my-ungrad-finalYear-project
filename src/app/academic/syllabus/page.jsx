@@ -110,27 +110,27 @@ export default function SyllabusPage() {
             {filteredFiles.map((f) => (
               <div
                 key={f._id}
-                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
+                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden border-t-4 border-orange-500"
               >
                 <div className="p-6">
-                  <h3 className="font-semibold text-gray-800 mb-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <FileText className="text-orange-600" size={20} />
+                    <span className="text-xs font-bold text-white bg-orange-600 px-2 py-1 rounded">
+                      SYLLABUS
+                    </span>
+                  </div>
+
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">
                     {f.subject}
                   </h3>
 
-                  <p className="text-sm text-gray-500 mb-3">
-                    {f.year} Year · {f.semester} Semester
+                  <p className="text-sm font-semibold text-gray-700 mb-3">
+                    {f.year} Year • {f.semester} Semester
                   </p>
-
-                  <span className="inline-block text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full mb-4">
-                    {f.format?.toUpperCase()}
-                  </span>
 
                   <a
                     href={`/api/academic/download/${f._id}`}
-                    className="flex items-center justify-center gap-2
-                               bg-orange-600 text-white
-                               px-4 py-2 rounded-lg
-                               hover:bg-orange-700 transition text-sm"
+                    className="flex items-center justify-center gap-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition text-sm font-medium"
                     download={f.fileName}
                   >
                     <Download size={16} />
