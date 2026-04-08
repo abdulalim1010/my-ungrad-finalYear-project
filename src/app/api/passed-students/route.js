@@ -57,6 +57,15 @@ export async function POST(req) {
       );
     }
 
+    /* ==== Check file size (max 2MB) ==== */
+    const fileSizeMB = photo.size / (1024 * 1024);
+    if (fileSizeMB > 2) {
+      return NextResponse.json(
+        { message: "Photo must be less than 2MB" },
+        { status: 400 }
+      );
+    }
+
     /* ==== Upload to Cloudinary ==== */
     const bytes = await photo.arrayBuffer();
     const buffer = Buffer.from(bytes);
