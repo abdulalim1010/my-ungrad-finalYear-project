@@ -14,6 +14,13 @@ export default function PassedStudentSubmit() {
     const form = e.target;
     const formData = new FormData(form);
 
+    const photo = formData.get("photo");
+    if (photo && photo.size > 2 * 1024 * 1024) {
+      Swal.fire("Error ❌", "Photo must be less than 2MB", "error");
+      setLoading(false);
+      return;
+    }
+
     try {
     const apiURL = baseURL ? `${baseURL}/api/passed-students` : "/api/passed-students";
     
