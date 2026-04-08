@@ -6,25 +6,30 @@ import Swal from "sweetalert2";
 export default function PassedStudentSubmit() {
   const [loading, setLoading] = useState(false);
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const [photoError, setPhotoError] = useState("");
+
+  function handlePhotoChange(e) {
+    const file = e.target.files[0];
+    if (file && file.size > 2 * 1024 * 1024) {
+      setPhotoError("Photo must be less than 2MB");
+      e.target.value = "";
+    } else {
+      setPhotoError("");
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (photoError) return;
     setLoading(true);
 
     const form = e.target;
     const formData = new FormData(form);
 
-    const photo = formData.get("photo");
-    if (photo && photo.size > 2 * 1024 * 1024) {
-      Swal.fire("Error ❌", "Photo must be less than 2MB", "error");
-      setLoading(false);
-      return;
-    }
-
     try {
-    const apiURL = baseURL ? `${baseURL}/api/passed-students` : "/api/passed-students";
-    
-    const res = await fetch(apiURL, {
+      const apiURL = baseURL ? `${baseURL}/api/passed-students` : "/api/passed-students";
+      
+      const res = await fetch(apiURL, {
         method: "POST",
         body: formData,
       });
@@ -154,6 +159,7 @@ export default function PassedStudentSubmit() {
             name="photo"
             accept="image/*"
             required
+            onChange={handlePhotoChange}
             className="w-full px-4 py-3 border border-dashed border-gray-400 rounded-xl
                        file:mr-4 file:py-2 file:px-4
                        file:rounded-lg file:border-0
@@ -161,6 +167,7 @@ export default function PassedStudentSubmit() {
                        hover:file:bg-green-700
                        cursor-pointer bg-gray-50"
           />
+          {photoError && <p className="text-xs text-red-500 mt-1">{photoError}</p>}
           <p className="text-xs text-gray-500 mt-1">
             JPG / PNG (Max 2MB recommended)
           </p>
