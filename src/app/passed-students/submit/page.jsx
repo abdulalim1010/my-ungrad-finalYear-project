@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 export default function PassedStudentSubmit() {
   const [loading, setLoading] = useState(false);
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -15,7 +15,9 @@ export default function PassedStudentSubmit() {
     const formData = new FormData(form);
 
     try {
-      const res = await fetch(`${baseURL}/api/passed-students`, {
+    const apiURL = baseURL ? `${baseURL}/api/passed-students` : "/api/passed-students";
+    
+    const res = await fetch(apiURL, {
         method: "POST",
         body: formData,
       });
