@@ -26,6 +26,13 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      // ImgBB images
+      {
+        protocol: "https",
+        hostname: "i.ibb.co.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

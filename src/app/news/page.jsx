@@ -9,6 +9,7 @@ import { Calendar, Eye, ArrowRight, Newspaper, Sparkles } from "lucide-react";
 export default function NewsPage() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -25,6 +26,13 @@ export default function NewsPage() {
     };
     fetchNews();
   }, []);
+
+  const showMore = () => {
+    setVisibleCount((prev) => prev + 6);
+  };
+
+  const visibleNews = news.slice(0, visibleCount);
+  const hasMore = visibleCount < news.length;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -109,13 +117,14 @@ export default function NewsPage() {
             <p className="text-gray-500 mt-2">Check back later for updates</p>
           </div>
         ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {news.map((item, index) => (
+          <>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {visibleNews.map((item, index) => (
               <motion.article
                 key={item._id}
                 variants={itemVariants}
@@ -195,6 +204,18 @@ export default function NewsPage() {
               </motion.article>
             ))}
           </motion.div>
+
+          {hasMore && (
+            <div className="text-center mt-12">
+              <button
+                onClick={showMore}
+                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                Read More
+              </button>
+            </div>
+          )}
+          </>
         )}
       </div>
     </section>

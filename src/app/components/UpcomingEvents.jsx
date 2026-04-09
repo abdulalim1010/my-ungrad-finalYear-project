@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 export default function UpcomingEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -24,6 +25,13 @@ export default function UpcomingEvents() {
     };
     fetchEvents();
   }, []);
+
+  const showMore = () => {
+    setVisibleCount((prev) => prev + 6);
+  };
+
+  const visibleEvents = events.slice(0, visibleCount);
+  const hasMore = visibleCount < events.length;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -125,16 +133,17 @@ export default function UpcomingEvents() {
             <p className="text-gray-500 mt-2">Check back later for updates</p>
           </div>
         ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {events.map((event, index) => {
-              const colorClass = colors[index % colors.length];
-              return (
+          <>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {visibleEvents.map((event, index) => {
+                const colorClass = colors[index % colors.length];
+                return (
                 <motion.div
                   key={event._id}
                   variants={itemVariants}
@@ -200,6 +209,18 @@ export default function UpcomingEvents() {
               );
             })}
           </motion.div>
+
+          {hasMore && (
+            <div className="text-center mt-12">
+              <button
+                onClick={showMore}
+                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                Read More
+              </button>
+            </div>
+          )}
+          </>
         )}
       </div>
     </section>
