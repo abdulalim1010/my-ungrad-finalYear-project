@@ -2,16 +2,42 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 export default function AdminStudentsPage() {
   const [savedData, setSavedData] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedSession, setSelectedSession] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(null);
 
   const itemsPerPage = 10;
+
+  const sessions = [];
+  for (let y = 2015; y <= 2030; y++) {
+    sessions.push(`${y}-${y + 1}`);
+  }
+
+  const handleSessionFilter = async (session) => {
+    setSelectedSession(session);
+    setLoading(true);
+    try {
+      const url = session ? `/api/students?session=${encodeURIComponent(session)}` : "/api/students";
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const data = await res.json();
+      setSavedData(data);
+      setError(null);
+    } catch (err) {
+      console.error("Error loading students:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /* ================= DELETE STUDENT ================= */
   const handleDelete = async (id) => {
@@ -51,7 +77,10 @@ export default function AdminStudentsPage() {
     async function loadStudents() {
       try {
         setLoading(true);
-        const res = await fetch("/api/students", { cache: "no-store" });
+        const url = selectedSession 
+          ? `/api/students?session=${encodeURIComponent(selectedSession)}` 
+          : "/api/students";
+        const res = await fetch(url, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setSavedData(data);
@@ -65,7 +94,46 @@ export default function AdminStudentsPage() {
     }
 
     loadStudents();
-  }, []);
+  }, [selectedSession]);
+
+  /* ================= GENERATE PDF ================= */
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text("Students Data Report", 14, 22);
+    
+    if (selectedSession) {
+      doc.setFontSize(12);
+      doc.text(`Session: ${selectedSession}`, 14, 32);
+    }
+    
+    doc.setFontSize(10);
+    doc.text(`Total Students: ${filteredData.length}`, 14, selectedSession ? 42 : 32);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, selectedSession ? 48 : 38);
+
+    const tableData = filteredData.map((s, index) => [
+      index + 1,
+      s.name || "-",
+      s.studentId || "-",
+      s.registerNumber || "-",
+      s.session || "-",
+      s.year || "-",
+      s.district || "-",
+      s.email || "-",
+      s.phone || "-",
+    ]);
+
+    doc.autoTable({
+      startY: selectedSession ? 55 : 45,
+      head: [["SL", "Name", "Student ID", "Register No", "Session", "Year", "District", "Email", "Phone"]],
+      body: tableData,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [30, 58, 138] },
+    });
+
+    doc.save(`students_${selectedSession || "all"}_${new Date().toISOString().split("T")[0]}.pdf`);
+  };
 
   /* ================= SEARCH ================= */
   const filteredData = useMemo(() => {
@@ -105,6 +173,28 @@ export default function AdminStudentsPage() {
       <h1 className="text-3xl font-bold mb-6 text-blue-700">
         Students Data (Admin)
       </h1>
+
+      {/* Session Filter & PDF Download */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <select
+          value={selectedSession}
+          onChange={(e) => handleSessionFilter(e.target.value)}
+          className="border px-4 py-2 rounded"
+        >
+          <option value="">All Sessions</option>
+          {sessions.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+
+        <button
+          onClick={generatePDF}
+          disabled={filteredData.length === 0}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          Download PDF
+        </button>
+      </div>
 
       {/* Search */}
       <input

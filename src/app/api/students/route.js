@@ -10,9 +10,14 @@ export async function GET(req) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "department_portal");
 
+    const { searchParams } = new URL(req.url);
+    const session = searchParams.get("session");
+
+    const query = session ? { session } : {};
+
     const students = await db
       .collection("students")
-      .find({})
+      .find(query)
       .sort({ createdAt: -1 }) // newest first
       .toArray();
 
