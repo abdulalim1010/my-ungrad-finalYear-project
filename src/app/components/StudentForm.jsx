@@ -46,7 +46,7 @@ export default function StudentForm({ onSubmit }) {
     const { name, value } = e.target;
 
     // Only digits + max length control
-    if (name === "studentId" && !/^\d{0,8}$/.test(value)) return;
+    if (name === "studentId" && !/^\d{0,9}$/.test(value)) return;
     if (name === "registerNumber" && !/^\d{0,9}$/.test(value)) return;
     if (name === "phone" && !/^\d*$/.test(value)) return;
 
@@ -56,12 +56,12 @@ export default function StudentForm({ onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.studentId.length !== 8) {
-      return Swal.fire("Error", "Student ID must be exactly 8 digits", "error");
+    if (formData.studentId && (formData.studentId.length < 6 || formData.studentId.length > 9)) {
+      return Swal.fire("Error", "Student ID must be 6 to 9 digits", "error");
     }
 
-    if (formData.registerNumber.length !== 9) {
-      return Swal.fire("Error", "Register Number must be exactly 9 digits", "error");
+    if (formData.registerNumber && (formData.registerNumber.length < 6 || formData.registerNumber.length > 9)) {
+      return Swal.fire("Error", "Register Number must be 6 to 9 digits", "error");
     }
 
     const confirm = await Swal.fire({
@@ -76,13 +76,6 @@ export default function StudentForm({ onSubmit }) {
     if (!confirm.isConfirmed) return;
 
     onSubmit?.(formData);
-
-    Swal.fire({
-      icon: "success",
-      title: "Submitted Successfully!",
-      timer: 2000,
-      showConfirmButton: false,
-    });
 
     setFormData({
       name: "",
@@ -121,23 +114,21 @@ export default function StudentForm({ onSubmit }) {
         <input
           type="text"
           name="studentId"
-          placeholder="Student ID (8 digits)"
+          placeholder="Student ID (6-9 digits, optional)"
           value={formData.studentId}
           onChange={handleChange}
-          maxLength={8}
+          maxLength={9}
           className="inputField"
-          required
         />
 
         <input
           type="text"
           name="registerNumber"
-          placeholder="Register Number (9 digits)"
+          placeholder="Register Number (6-9 digits, optional)"
           value={formData.registerNumber}
           onChange={handleChange}
           maxLength={9}
           className="inputField"
-          required
         />
 
         <input

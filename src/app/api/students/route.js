@@ -42,9 +42,25 @@ export async function POST(req) {
     const body = await req.json();
 
     // Minimum required validation
-    if (!body.name || !body.studentId) {
+    if (!body.name) {
       return new Response(
-        JSON.stringify({ error: "Name and Student ID are required" }),
+        JSON.stringify({ error: "Name is required" }),
+        { status: 400 }
+      );
+    }
+
+    // Validate studentId if provided (6-9 digits)
+    if (body.studentId && (body.studentId.length < 6 || body.studentId.length > 9)) {
+      return new Response(
+        JSON.stringify({ error: "Student ID must be 6 to 9 digits" }),
+        { status: 400 }
+      );
+    }
+
+    // Validate registerNumber if provided (6-9 digits)
+    if (body.registerNumber && (body.registerNumber.length < 6 || body.registerNumber.length > 9)) {
+      return new Response(
+        JSON.stringify({ error: "Register Number must be 6 to 9 digits" }),
         { status: 400 }
       );
     }
