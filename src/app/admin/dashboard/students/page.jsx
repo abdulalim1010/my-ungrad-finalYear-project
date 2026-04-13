@@ -100,10 +100,6 @@ export default function AdminStudentsPage() {
   const generatePDF = () => {
     const doc = new jsPDF();
     
-    const sortedData = [...filteredData].sort((a, b) => 
-      a._id.toString().localeCompare(b._id.toString())
-    );
-    
     doc.setFontSize(18);
     doc.text("Students Data Report", 14, 22);
     
@@ -113,11 +109,11 @@ export default function AdminStudentsPage() {
     }
     
     doc.setFontSize(10);
-    doc.text(`Total Students: ${sortedData.length}`, 14, selectedSession ? 48 : 38);
+    doc.text(`Total Students: ${filteredData.length}`, 14, selectedSession ? 48 : 38);
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, selectedSession ? 48 : 38);
 
-    const tableData = sortedData.map((s, index) => [
-      index + 1,
+    const tableData = filteredData.map((s, index) => [
+      String(index + 1).padStart(2, '0'),
       s.name || "-",
       s.studentId || "-",
       s.registerNumber || "-",

@@ -23,7 +23,7 @@ export default function GalleryContent({ items }) {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {visibleItems.map((item) => (
               <div
-                key={item._id.toString()}
+                key={item._id}
                 className="
                   group relative bg-white rounded-3xl overflow-hidden
                   shadow-xl hover:shadow-2xl
