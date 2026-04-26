@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Search, X } from "lucide-react";
 
 export default function PublicStudentsDataPage() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -23,8 +25,16 @@ export default function PublicStudentsDataPage() {
     loadStudents();
   }, []);
 
-  const totalPages = Math.ceil(students.length / itemsPerPage);
-  const paginatedData = students.slice(
+  const filteredStudents = students.filter((s) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      s.name?.toLowerCase().includes(query) ||
+      s.studentId?.toLowerCase().includes(query)
+    );
+  });
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedData = filteredStudents.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -36,6 +46,11 @@ export default function PublicStudentsDataPage() {
     "from-amber-50 to-orange-50",
     "from-cyan-50 to-sky-50",
   ];
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   if (loading) {
     return (
@@ -60,8 +75,39 @@ export default function PublicStudentsDataPage() {
         Students Data
       </h1>
 
+      {/* Search Bar */}
+      <div className="mb-8 max-w-xl mx-auto">
+        <div className="relative">
+          <Search
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by name or student ID..."
+            className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X size={20} />
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="space-y-6">
-        {paginatedData.length === 0 && (
+        {paginatedData.length === 0 && searchQuery && (
+          <div className="p-8 text-center text-gray-500">
+            No students found matching "<span className="font-semibold text-blue-600">{searchQuery}</span>"
+          </div>
+        )}
+
+        {paginatedData.length === 0 && !searchQuery && (
           <div className="p-8 text-center text-gray-500">
             No students data found
           </div>
