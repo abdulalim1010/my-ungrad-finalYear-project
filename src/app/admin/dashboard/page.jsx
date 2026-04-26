@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useAdmin from "@/hooks/useAdmin";
-import { Users, FileText, Bell, Clock, TrendingUp, BookOpen, GraduationCap } from "lucide-react";
+import { Users, FileText, Bell, Clock, TrendingUp, BookOpen, GraduationCap, File } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const { isAdmin, loading } = useAdmin();
@@ -164,6 +164,14 @@ export default function AdminDashboardPage() {
             <p className="text-sm text-gray-600">View and manage students</p>
           </a>
           <a
+            href="/admin/dashboard/results"
+            className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200"
+          >
+            <File className="text-indigo-600 mb-2" size={24} />
+            <h3 className="font-semibold text-gray-800">Upload Results</h3>
+            <p className="text-sm text-gray-600">Upload result documents</p>
+          </a>
+          <a
             href="/admin/dashboard/academic"
             className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
           >
@@ -178,14 +186,6 @@ export default function AdminDashboardPage() {
             <Bell className="text-purple-600 mb-2" size={24} />
             <h3 className="font-semibold text-gray-800">Manage Notices</h3>
             <p className="text-sm text-gray-600">Create and publish notices</p>
-          </a>
-          <a
-            href="/admin/dashboard/users"
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-200"
-          >
-            <Users className="text-green-600 mb-2" size={24} />
-            <h3 className="font-semibold text-gray-800">Manage Users</h3>
-            <p className="text-sm text-gray-600">View and manage user accounts</p>
           </a>
         </div>
       </div>

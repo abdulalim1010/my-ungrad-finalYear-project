@@ -44,14 +44,21 @@ const menu = [
     icon: Users,
   },
 
-  /* ================= STUDENTS DATA (ADMIN) ================= */
-  {
-    name: "Students Data",
-    href: "/admin/dashboard/students",
-    icon: Users,
-  },
+   /* ================= STUDENTS DATA (ADMIN) ================= */
+   {
+     name: "Students Data",
+     href: "/admin/dashboard/students",
+     icon: Users,
+   },
 
-  /* ================= ACADEMIC ================= */
+   /* ================= RESULTS ================= */
+   {
+     name: "Upload Results",
+     href: "/admin/dashboard/results",
+     icon: FileText,
+   },
+
+   /* ================= ACADEMIC ================= */
   {
     name: "Academic Files",
     icon: BookOpen,

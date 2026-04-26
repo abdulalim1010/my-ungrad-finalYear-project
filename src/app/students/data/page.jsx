@@ -67,34 +67,12 @@ export default function PublicStudentsDataPage() {
               {s.name} ({s.studentId})
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <p>
-                <strong>Register No:</strong> {s.registerNumber || "-"}
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <p>
                 <strong>Session:</strong> {s.session || "-"}
               </p>
               <p>
-                <strong>Year:</strong> {s.year || "-"}
-              </p>
-
-              <p>
-                <strong>District:</strong> {s.district || "-"}
-              </p>
-              <p>
-                <strong>Email:</strong> {s.email || "-"}
-              </p>
-              <p>
-                <strong>Phone:</strong> {s.phone || "-"}
-              </p>
-
-              <p className="md:col-span-3">
-                <strong>Address:</strong> {s.address || "-"}
-              </p>
-
-              <p className="md:col-span-3">
-                <strong>Gender:</strong> {s.gender || "-"} |{" "}
-                <strong>Religion:</strong> {s.religion || "-"}
+                <strong>Batch:</strong> {s.year || "-"}
               </p>
             </div>
           </div>

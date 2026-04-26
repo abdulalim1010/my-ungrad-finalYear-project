@@ -3,6 +3,7 @@ import Link from "next/link";
 import GalleryContent from "./components/GalleryContent";
 
 export const dynamic = 'force-dynamic';
+export const revalidate = false;
 
 export default async function GalleryPage() {
   let allItems = [];

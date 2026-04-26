@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, Plus, Edit2, Trash2, X, Search } from "lucide-react";
+import { Users, Plus, Edit2, Trash2, X, Search, Download } from "lucide-react";
 import { showSuccess, showError, showDeleteConfirm } from "@/utils/swal";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType, TextRun } from "docx";
 
 export default function StaffManagementPage() {
   const [staff, setStaff] = useState([]);
@@ -143,6 +146,79 @@ export default function StaffManagementPage() {
     member.designation?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text("Staff Members List", 14, 22);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+    
+    const tableData = filteredStaff.map(member => [
+      member.name || "",
+      member.designation || "",
+      member.phone || "",
+      member.department || ""
+    ]);
+    
+    doc.autoTable({
+      head: [["Name", "Designation", "Phone", "Department"]],
+      body: tableData,
+      startY: 35,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [5, 150, 105] }
+    });
+    
+    doc.save("staff-list.pdf");
+  };
+
+  const downloadDOCX = async () => {
+    const tableRows = [
+      new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Name", bold: true })] })] }),
+          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Designation", bold: true })] })] }),
+          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Phone", bold: true })] })] }),
+        ],
+      }),
+      ...filteredStaff.map(member => 
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph(member.name || "")] }),
+            new TableCell({ children: [new Paragraph(member.designation || "")] }),
+            new TableCell({ children: [new Paragraph(member.phone || "")] }),
+          ],
+        })
+      ),
+    ];
+
+    const table = new Table({
+      rows: tableRows,
+      width: { size: 100, type: WidthType.PERCENTAGE },
+    });
+
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: [
+          new Paragraph({ children: [new TextRun({ text: "Staff Members List", bold: true, size: 32 })] }),
+          new Paragraph({ children: [new TextRun({ text: `Generated on: ${new Date().toLocaleDateString()}`, size: 20 })] }),
+          new Paragraph({ text: "" }),
+          table,
+        ],
+      }],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "staff-list.docx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -151,16 +227,32 @@ export default function StaffManagementPage() {
           <h1 className="text-3xl font-bold text-gray-800">Staff Management</h1>
           <p className="text-gray-600 mt-1">Manage departmental staff members</p>
         </div>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowModal(true);
-          }}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg"
-        >
-          <Plus size={20} />
-          Add Staff
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={downloadPDF}
+            className="flex items-center gap-2 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all shadow-lg"
+          >
+            <Download size={20} />
+            PDF
+          </button>
+          <button
+            onClick={downloadDOCX}
+            className="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-lg"
+          >
+            <Download size={20} />
+            DOCX
+          </button>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg"
+          >
+            <Plus size={20} />
+            Add Staff
+          </button>
+        </div>
       </div>
 
       {/* Search */}

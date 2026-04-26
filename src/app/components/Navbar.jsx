@@ -137,14 +137,14 @@ export default function Navbar() {
         { label: "Projects", href: "/research/projects" },
       ],
     },
-    {
-      name: "Students",
-      icon: Users,
-      submenu: [
-        { label: "Student List", href: "/students" },
-        { label: "Results", href: "/students/results" },
-      ],
-    },
+     {
+       name: "Students",
+       icon: Users,
+       submenu: [
+         { label: "Student List", href: "/students/data" },
+         { label: "Results", href: "/students/results" },
+       ],
+     },
     {
       name: "Faculty Members",
       icon: GraduationCap,
