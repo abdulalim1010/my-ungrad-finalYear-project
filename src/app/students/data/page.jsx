@@ -47,6 +47,15 @@ export default function PublicStudentsDataPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <div className="flex justify-end mb-6">
+        <a
+          href="/students"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-md hover:shadow-lg"
+        >
+          + Add Your Information
+        </a>
+      </div>
+
       <h1 className="text-3xl font-bold mb-6 text-blue-700 text-center">
         Students Data
       </h1>
