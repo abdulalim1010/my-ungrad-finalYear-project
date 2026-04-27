@@ -2,7 +2,6 @@ import { clientPromise } from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
-import { revalidatePath } from "next/cache";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
