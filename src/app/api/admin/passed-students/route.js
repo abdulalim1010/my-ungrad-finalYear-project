@@ -3,43 +3,43 @@ import { clientPromise } from "@/lib/mongodb";
 import cloudinary from "@/lib/cloudinary";
 import { ObjectId } from "mongodb";
 
-/* =========================
-   POST - Admin Add Passed Student
-   ========================= */
-export async function POST(req) {
-  try {
-    const formData = await req.formData();
+  /* =========================
+    POST - Admin Add Passed Student
+    ========================= */
+  export async function POST(req) {
+    try {
+      const formData = await req.formData();
 
-    const name = formData.get("name");
-    const session = formData.get("session");
-    const universityBatch = formData.get("universityBatch");
-    const departmentBatch = formData.get("departmentBatch");
-    const company = formData.get("company");
-    const linkedin = formData.get("linkedin");
-    const image = formData.get("image");
+      const name = formData.get("name");
+      const session = formData.get("session");
+      const universityBatch = formData.get("universityBatch");
+      const departmentBatch = formData.get("departmentBatch");
+      const company = formData.get("company");
+      const linkedin = formData.get("linkedin");
+      const image = formData.get("image");
 
-    if (!name || !session || !universityBatch || !departmentBatch || !image) {
-      return NextResponse.json(
-        { message: "Name, Session, University Batch, Department Batch, and image are required" },
-        { status: 400 }
-      );
-    }
+      if (!name || !session || !universityBatch || !departmentBatch || !image) {
+        return NextResponse.json(
+          { message: "Name, Session, University Batch, Department Batch, and image are required" },
+          { status: 400 }
+        );
+      }
 
-    // Upload image to cloudinary
-    const bytes = await image.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+      // Upload image to cloudinary
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
 
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "passed-students" }, (err, result) => {
-          if (err) reject(err);
-          resolve(result);
-        })
-        .end(buffer);
-    });
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "passed-students" }, (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+          })
+          .end(buffer);
+      });
 
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+      const client = await clientPromise;
+      const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("passed_students").insertOne({
       name,
@@ -63,40 +63,40 @@ export async function POST(req) {
   }
 }
 
-/* =========================
-   DELETE - Admin Delete Passed Student
-   ========================= */
-export async function DELETE(req) {
-  try {
-    const { id } = await req.json();
+  /* =========================
+    DELETE - Admin Delete Passed Student
+    ========================= */
+  export async function DELETE(req) {
+    try {
+      const { id } = await req.json();
 
-    if (!id) {
+      if (!id) {
+        return NextResponse.json(
+          { message: "ID is required" },
+          { status: 400 }
+        );
+      }
+
+      const client = await clientPromise;
+      const db = client.db(process.env.MONGODB_DB || "departmentDB");
+
+      const result = await db.collection("passed_students").deleteOne({
+        _id: new ObjectId(id),
+      });
+
+      if (result.deletedCount === 0) {
+        return NextResponse.json(
+          { message: "Student not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({ success: true });
+    } catch (error) {
+      console.error("Delete passed student error:", error);
       return NextResponse.json(
-        { message: "ID is required" },
-        { status: 400 }
+        { message: "Failed to delete student" },
+        { status: 500 }
       );
     }
-
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
-
-    const result = await db.collection("passed_students").deleteOne({
-      _id: new ObjectId(id),
-    });
-
-    if (result.deletedCount === 0) {
-      return NextResponse.json(
-        { message: "Student not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Delete passed student error:", error);
-    return NextResponse.json(
-      { message: "Failed to delete student" },
-      { status: 500 }
-    );
   }
-}

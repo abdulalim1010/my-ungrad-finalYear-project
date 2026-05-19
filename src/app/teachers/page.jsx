@@ -12,7 +12,7 @@ export default async function TeachersPage() {
       throw new Error("Database not configured");
     }
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
     teachers = await db.collection("teachers").find({}).toArray();
   } catch (error) {
     console.log("Teachers collection not found or empty");

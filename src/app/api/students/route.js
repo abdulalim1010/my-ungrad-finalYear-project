@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 export async function GET(req) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const { searchParams } = new URL(req.url);
     const session = searchParams.get("session");
@@ -66,7 +66,7 @@ export async function POST(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     // Save all form fields dynamically
     const result = await db.collection("students").insertOne({
@@ -102,7 +102,7 @@ export async function DELETE(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("students").deleteOne({
       _id: new ObjectId(id),

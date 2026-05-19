@@ -15,7 +15,7 @@ export async function GET(req) {
   }
 
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || "department_portal");
+  const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
   const files = await db
     .collection("academic")
@@ -44,7 +44,7 @@ export async function POST(req) {
       }
 
       const client = await clientPromise;
-      const db = client.db(process.env.MONGODB_DB || "department_portal");
+      const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
       await db.collection("academic").insertOne({
         subject,
@@ -115,7 +115,7 @@ export async function POST(req) {
 
     /* ---------- Save to DB ---------- */
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("academic").insertOne({
       subject,
@@ -155,7 +155,7 @@ export async function DELETE(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const adminUser = await db.collection("users").findOne({ email: adminEmail });
 

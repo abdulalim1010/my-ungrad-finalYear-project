@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const data = await db
       .collection("research_publications")
@@ -26,7 +26,7 @@ export async function POST(req) {
     const { title, authors, journal, year } = await req.json();
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("research_publications").insertOne({
       title,
@@ -47,7 +47,7 @@ export async function DELETE(req) {
     const { id } = await req.json();
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     await db.collection("research_publications").deleteOne({
       _id: new ObjectId(id),

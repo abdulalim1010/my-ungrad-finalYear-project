@@ -28,8 +28,8 @@ export default async function TeacherDetail(props) {
     return <div className="text-center p-10">Database not configured</div>;
   }
 
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
   let objectId;
   try {

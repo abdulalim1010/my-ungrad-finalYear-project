@@ -13,7 +13,7 @@ export default async function GalleryPage() {
       throw new Error("Database not configured");
     }
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     const rawItems = await db
       .collection("student_gallery")

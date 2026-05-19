@@ -12,7 +12,7 @@ export default async function StaffPage() {
       throw new Error("Database not configured");
     }
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
     const allStaff = await db.collection("staff").find({}).toArray();
     
     // Sort staff: isRegister first, then primary keywords, then others

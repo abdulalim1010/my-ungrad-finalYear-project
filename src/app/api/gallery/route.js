@@ -19,10 +19,10 @@
      upload.on("error", (err) => reject(err));
    });
 
-   const client = await clientPromise;
-   const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
-   await db.collection("student_gallery").insertOne({
+    await db.collection("student_gallery").insertOne({
      title: data.get("title"),
      description: data.get("description"),
      studentName: data.get("studentName"),

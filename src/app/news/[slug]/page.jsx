@@ -12,8 +12,8 @@ export default async function SingleNews({ params }) {
     return <div className="p-10 text-center">Database not configured</div>;
   }
 
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
   // ✅ DEFINE news
   const news = await db.collection("news").findOne({ slug });

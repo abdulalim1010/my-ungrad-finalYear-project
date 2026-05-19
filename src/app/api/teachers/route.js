@@ -7,7 +7,7 @@ export async function GET(request) {
     const id = searchParams.get("id");
     
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
     const collection = db.collection("teachers");
 
     if (id) {
@@ -30,7 +30,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
     const collection = db.collection("teachers");
 
     const teacherData = await request.json();
@@ -90,7 +90,7 @@ export async function PUT(request) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
     const collection = db.collection("teachers");
 
     const updateData = await request.json();
@@ -126,7 +126,26 @@ export async function DELETE(request) {
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const collection = db.collection("teachers");
+
+    const { ObjectId } = await import("mongodb");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting teacher:", error);
+    return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
+  }
+}
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
     const collection = db.collection("teachers");
 
     const { ObjectId } = await import("mongodb");

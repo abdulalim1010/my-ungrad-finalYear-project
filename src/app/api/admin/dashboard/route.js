@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "department_portal");
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
     // Get total users count
     const totalUsers = await db.collection("users").countDocuments();
