@@ -119,18 +119,25 @@ export default async function StaffDetail(props) {
         </div>
       </div>
 
-      {/* MAP */}
-      <div className="max-w-7xl mx-auto mt-20 px-6">
-        <FadeInWrapper>
-          <section id="office">
-            <h2 className="text-3xl font-bold mb-5 text-green-900">Office Location</h2>
-            <iframe
-              src="https://www.google.com/maps/embed?pb=YOUR_MAP_EMBED&zoom=17"
-              className="w-full h-[420px] rounded-xl"
-            ></iframe>
-          </section>
-        </FadeInWrapper>
-      </div>
+       {/* MAP */}
+       <div className="max-w-7xl mx-auto mt-20 px-6">
+         <FadeInWrapper>
+           <section id="office">
+             <h2 className="text-3xl font-bold mb-5 text-green-900">Office Location</h2>
+             {staff.mapUrl ? (
+               <iframe
+                 src={staff.mapUrl}
+                 className="w-full h-[420px] rounded-xl"
+                 title="Office Location"
+               />
+             ) : (
+               <p className="text-center text-gray-500 py-10">
+                 Office location map not available
+               </p>
+             )}
+           </section>
+         </FadeInWrapper>
+       </div>
     </div>
   );
 }

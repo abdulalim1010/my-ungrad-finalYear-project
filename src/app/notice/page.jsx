@@ -89,41 +89,47 @@ export default function PublicNoticePage() {
                 📅 {new Date(n.createdAt).toLocaleString("en-GB")}
               </p>
 
-              {/* FILE PREVIEW + DOWNLOAD */}
-              {n.fileUrl && (
-                <div className="mt-4 space-y-3">
-                  {/* Desktop Preview */}
-                  <div className="hidden md:block">
-                    <iframe
-                      src={n.fileUrl}
-                      className="w-full h-[450px] border rounded-lg"
-                      loading="lazy"
-                    />
-                  </div>
+               {/* FILE PREVIEW + DOWNLOAD */}
+               {n.fileUrl && (
+                 <div className="mt-4 space-y-3">
+                   {/* Desktop Preview */}
+                   <div className="hidden md:block">
+                     {n.fileUrl.startsWith('http') ? (
+                       <iframe
+                         src={n.fileUrl}
+                         className="w-full h-[450px] border rounded-lg"
+                         loading="lazy"
+                       />
+                     ) : (
+                       <p className="text-center text-gray-500 py-8">
+                         File preview not available for this file type
+                       </p>
+                     )}
+                   </div>
 
-                  {/* Buttons */}
-                  <div className="flex flex-wrap gap-3">
-                    <a
-                      href={n.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded text-sm"
-                    >
-                      <FileText size={16} />
-                      View File
-                    </a>
+                   {/* Buttons */}
+                   <div className="flex flex-wrap gap-3">
+                     <a
+                       href={n.fileUrl}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded text-sm"
+                     >
+                       <FileText size={16} />
+                       View File
+                     </a>
 
-                    <a
-                      href={n.fileUrl}
-                      download
-                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded text-sm"
-                    >
-                      <Download size={16} />
-                      Download
-                    </a>
-                  </div>
-                </div>
-              )}
+                     <a
+                       href={n.fileUrl}
+                       download
+                       className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded text-sm"
+                     >
+                       <Download size={16} />
+                       Download
+                     </a>
+                   </div>
+                 </div>
+               )}
             </div>
           ))}
         </div>
