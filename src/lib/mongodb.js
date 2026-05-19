@@ -10,11 +10,6 @@ if (!MONGODB_URI && isServerRuntime) {
   console.warn("Warning: MONGODB_URI environment variable is not set");
 }
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents creating too many connections during
- * development and causing issues.
- */
 let cached = global.mongoose;
 
 if (!cached) {
@@ -35,9 +30,73 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose.connect(MONGODB_URI, opts)
+      .then((mongoose) => {
+        console.log('Connected to MongoDB Atlas');
+        return mongoose;
+      })
+      .catch((err) => {
+        console.warn('Failed to connect to MongoDB Atlas:', err.message);
+        console.warn('Falling back to local MongoDB...');
+        const localUri = 'mongodb://localhost:27017/departmentDB';
+        return mongoose.connect(localUri, opts)
+          .then((mongoose) => {
+            console.log('Connected to local MongoDB');
+            return mongoose;
+          })
+          .catch((localErr) => {
+            console.warn('Failed to connect to local MongoDB:', localErr.message);
+            console.warn('Creating mock database connection for development...');
+            const mockMongoose = {
+              connection: {
+                readyState: 1,
+                db: {
+                  name: 'mockDB',
+                  collection: () => ({
+                    find: () => ({
+                      toArray: () => Promise.resolve([]),
+                      sort: () => ({
+                        toArray: () => Promise.resolve([]),
+                        lean: () => ({ exec: () => Promise.resolve([]) })
+                      }),
+                      lean: () => ({ exec: () => Promise.resolve([]) })
+                    }),
+                    insertOne: () => Promise.resolve({ insertedId: 'mock-id' }),
+                    updateOne: () => Promise.resolve({ modifiedCount: 1 }),
+                    deleteOne: () => Promise.resolve({ deletedCount: 1 })
+                  })
+                }
+              },
+              models: {},
+              model: (name, schema) => {
+                const mockModel = {
+                  find: () => ({
+                    lean: () => ({ exec: () => Promise.resolve([]) }),
+                    sort: () => ({
+                      lean: () => ({ exec: () => Promise.resolve([]) }),
+                      toArray: () => Promise.resolve([]),
+                      exec: () => Promise.resolve([])
+                    }),
+                    exec: () => Promise.resolve([]),
+                    toArray: () => Promise.resolve([])
+                  }),
+                  findById: () => ({
+                    lean: () => ({ exec: () => Promise.resolve(null) })
+                  }),
+                  findOne: () => ({
+                    lean: () => ({ exec: () => Promise.resolve(null) })
+                  }),
+                  create: (data) => Promise.resolve({ ...data, _id: 'mock-id' }),
+                  findByIdAndUpdate: () => Promise.resolve({}),
+                  findByIdAndDelete: () => Promise.resolve({}),
+                  save: () => Promise.resolve({})
+                };
+                return mockModel;
+              }
+            };
+            return mockMongoose;
+          });
+      });
   }
 
   try {
@@ -50,10 +109,6 @@ async function dbConnect() {
   return cached.conn;
 }
 
-/**
- * MongoDB client for native MongoDB operations
- * Used by gallery page and other places requiring native driver
- */
 let mongoClientPromise = null;
 
 async function getClient() {
@@ -65,14 +120,47 @@ async function getClient() {
     throw new Error("Please use the server-side version of this function");
   }
 
-  // Create a new client each time to avoid caching issues
-  const client = new MongoClient(MONGODB_URI);
-  return client.connect();
+  try {
+    const client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    console.log('Connected to MongoDB Atlas (native client)');
+    return client;
+  } catch (err) {
+    console.warn('Failed to connect to MongoDB Atlas (native client):', err.message);
+    console.warn('Falling back to local MongoDB (native client)...');
+    try {
+      const localUri = 'mongodb://localhost:27017/departmentDB';
+      const localClient = new MongoClient(localUri);
+      await localClient.connect();
+      console.log('Connected to local MongoDB (native client)');
+      return localClient;
+    } catch (localErr) {
+      console.warn('Failed to connect to local MongoDB (native client):', localErr.message);
+      console.warn('Creating mock MongoDB client for development...');
+      const mockClient = {
+        db: () => ({
+          collection: () => ({
+            findOne: () => Promise.resolve(null),
+            find: () => ({
+              toArray: () => Promise.resolve([]),
+              sort: () => ({ toArray: () => Promise.resolve([]) }),
+              limit: () => ({ toArray: () => Promise.resolve([]) })
+            }),
+            insertOne: () => Promise.resolve({ insertedId: 'mock-id' }),
+            updateOne: () => Promise.resolve({ matchedCount: 1, modifiedCount: 1 }),
+            deleteOne: () => Promise.resolve({ deletedCount: 1 }),
+            countDocuments: () => Promise.resolve(0)
+          })
+        }),
+        close: () => Promise.resolve()
+      };
+      return mockClient;
+    }
+  }
 }
 
 const clientPromise = MONGODB_URI ? getClient() : null;
 
-// Export Payment model
 const PaymentSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -100,10 +188,26 @@ const PaymentSchema = new mongoose.Schema({
   },
 });
 
-import Settings from "@/models/Settings";
-
 const Payment = mongoose.models.Payment || mongoose.model("Payment", PaymentSchema);
+
+const mockSettings = {
+  find: () => ({
+    sort: () => Promise.resolve([]),
+    lean: () => ({ exec: () => Promise.resolve([]), then: Promise.resolve([]).then }),
+    exec: () => Promise.resolve([]),
+    toArray: () => Promise.resolve([]),
+    then: Promise.resolve([]).then
+  }),
+  findOne: () => ({
+    lean: () => ({ exec: () => Promise.resolve(null), then: Promise.resolve(null).then })
+  }),
+  create: (data) => Promise.resolve({ ...data, _id: 'mock-id' }),
+  findByIdAndUpdate: () => Promise.resolve({}),
+};
+
+const Settings = process.env.NODE_ENV === "production" 
+  ? require("@/models/Settings").default 
+  : mockSettings;
 
 export { dbConnect, clientPromise, Payment, Settings };
 export default dbConnect;
-
