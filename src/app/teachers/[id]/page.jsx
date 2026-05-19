@@ -28,8 +28,8 @@ export default async function TeacherDetail(props) {
     return <div className="text-center p-10">Database not configured</div>;
   }
 
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+  const client = await clientPromise;
+  const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
   let objectId;
   try {
@@ -46,7 +46,6 @@ export default async function TeacherDetail(props) {
 
   return (
     <div className="w-full bg-[#F5F7FB] pb-24">
-
       {/* HEADER BG IMAGE */}
       <div className="relative w-full h-[350px] lg:h-[380px] flex items-end">
         <img
@@ -64,7 +63,6 @@ export default async function TeacherDetail(props) {
           >
             ← Back
           </Link>
-          
         </FadeInWrapper>
       </div>
 
@@ -79,14 +77,11 @@ export default async function TeacherDetail(props) {
                 alt={`${teacher.name} photo`}
                 className="w-full h-[450px] object-cover rounded-xl transition duration-700 scale-100 group-hover:scale-110"
               />   
-              <div className="text-center mb-5"><h1 className="mt-8 text-3xl font-extrabold text-black drop-shadow-lg">{teacher.name}</h1>
+              <div className="text-center mb-5">
+                <h1 className="mt-8 text-3xl font-extrabold text-black drop-shadow-lg">{teacher.name}</h1>
                 <p className="text-2xl text-black mt-4">{teacher.designation}</p>
-              
-              <span className="text-shadow-blue-500 mt-4 mb-5  font-bold  text-lg">{teacher.department}</span>
+                <span className="text-shadow-blue-500 mt-4 mb-5 font-bold text-lg">{teacher.department}</span>
               </div>
-              
-                
-             
             </div>
           </FadeInWrapper>
 
@@ -155,26 +150,28 @@ export default async function TeacherDetail(props) {
           {teacher.membership && (
             <Section id="membership" title="Membership" list={teacher.membership} />
           )}
+        </FadeInWrapper>
+      </div>
 
-       {/* MAP */}
-       <div className="max-w-7xl mx-auto mt-20 px-6">
-         <FadeInWrapper>
-           <section id="office">
-             <h2 className="text-3xl font-bold mb-5 text-blue-900">Office Location</h2>
-             {teacher.mapUrl ? (
-               <iframe
-                 src={teacher.mapUrl}
-                 className="w-full h-[420px] rounded-xl"
-                 title="Office Location"
-               />
-             ) : (
-               <p className="text-center text-gray-500 py-10">
-                 Office location map not available
-               </p>
-             )}
-           </section>
-         </FadeInWrapper>
-       </div>
+      {/* MAP */}
+      <div className="max-w-7xl mx-auto mt-20 px-6">
+        <FadeInWrapper>
+          <section id="office">
+            <h2 className="text-3xl font-bold mb-5 text-blue-900">Office Location</h2>
+            {teacher.mapUrl ? (
+              <iframe
+                src={teacher.mapUrl}
+                className="w-full h-[420px] rounded-xl"
+                title="Office Location"
+              />
+            ) : (
+              <p className="text-center text-gray-500 py-10">
+                Office location map not available
+              </p>
+            )}
+          </section>
+        </FadeInWrapper>
+      </div>
     </div>
   );
 }
