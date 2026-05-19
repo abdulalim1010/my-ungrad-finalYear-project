@@ -11,6 +11,57 @@ export async function GET(req) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
+    const results = await db.collection("results")
+      .find({})
+      .sort({ uploadedAt: -1 })
+      .toArray();
+
+    const safeResults = results.map((item) => ({
+      ...item,
+      _id: item._id.toString(),
+      uploadedAt: item.uploadedAt?.toISOString?.() || null,
+    }));
+
+    return NextResponse.json(safeResults);
+  } catch (err) {
+    console.error("GET results error:", err);
+    return NextResponse.json(
+      { error: "Fetch failed: " + err.message },
+      { status: 500 }
+    );
+  }
+}
+
+/* ================= POST ================= */
+export async function POST(req) {
+  try {
+    const formData = await req.formData();
+    const title = formData.get("title");
+    const session = formData.get("session");
+    const year = formData.get("year");
+    const file = formData.get("file");
+
+    if (!title || !session || !year || !file) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    const uploadResult = await cloudinary.uploader.upload(
+      `data:${file.type};base64,${fileBuffer.toString("base64")}`,
+      {
+        folder: "results",
+        resource_type: fileExtension === "pdf" || fileExtension === "doc" || fileExtension === "docx" ? "raw" : "auto",
+      }
+    );
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+
     await db.collection("results").insertOne({
       title,
       session,
