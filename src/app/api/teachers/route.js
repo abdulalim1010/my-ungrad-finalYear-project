@@ -162,3 +162,98 @@ export async function DELETE(request) {
     return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
   }
 }
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const collection = db.collection("teachers");
+
+    const { ObjectId } = await import("mongodb");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting teacher:", error);
+    return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
+  }
+}
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const collection = db.collection("teachers");
+
+    const { ObjectId } = await import("mongodb");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting teacher:", error);
+    return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
+  }
+}
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const collection = db.collection("teachers");
+
+    const { ObjectId } = await import("mongodb");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting teacher:", error);
+    return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
+  }
+}
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const collection = db.collection("teachers");
+
+    const { ObjectId } = await import("mongodb");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting teacher:", error);
+    return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
+  }
+}
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DB || "departmentDB");
+    const collection = db.collection("teachers");
+
+    const { ObjectId } = await import("mongodb");
+
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting teacher:", error);
+    return NextResponse.json({ error: "Failed to delete teacher" }, { status: 500 });
+  }
+}
