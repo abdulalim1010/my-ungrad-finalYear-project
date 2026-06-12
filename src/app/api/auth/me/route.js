@@ -3,17 +3,16 @@ import { clientPromise } from "@/lib/mongodb";
 import { verifyToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 
-// 🔥 MUST — build / vercel safe
 export const dynamic = "force-dynamic";
 
-export async function GET(req) {
+export async function GET() {
   try {
     const cookieStore = cookies();
     const token = cookieStore.get("auth_token")?.value;
 
     if (!token) {
       return NextResponse.json(
-        { role: null, error: "Not authenticated" },
+        { error: "Not authenticated" },
         { status: 401 }
       );
     }
@@ -22,17 +21,8 @@ export async function GET(req) {
 
     if (!decoded) {
       return NextResponse.json(
-        { role: null, error: "Invalid token" },
+        { error: "Invalid token" },
         { status: 401 }
-      );
-    }
-
-    // 🔥 ENV SAFETY (Vercel build crash prevent)
-    if (!process.env.MONGODB_URI) {
-      console.error("❌ MONGODB_URI missing");
-      return NextResponse.json(
-        { role: null, error: "Server config error" },
-        { status: 500 }
       );
     }
 
@@ -43,20 +33,23 @@ export async function GET(req) {
 
     if (!user) {
       return NextResponse.json(
-        { role: null, error: "User not found" },
+        { error: "User not found" },
         { status: 404 }
       );
     }
 
-    // ✅ SAFE RETURN
+    return NextResponse.json({
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: (user.role || "user").toLowerCase(),
+      },
+    });
+  } catch (error) {
+    console.error("Auth me error:", error);
     return NextResponse.json(
-      { role: user.role ?? null },
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error("API /admin/check error:", err);
-    return NextResponse.json(
-      { role: null, error: "Server error" },
+      { error: "Server error" },
       { status: 500 }
     );
   }

@@ -22,8 +22,6 @@ import {
 } from "lucide-react";
 
 import logoimage from "../../../src/assets/logoo.png";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "./firebase";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -39,27 +37,46 @@ export default function Navbar() {
 
   /* 🔐 Auth + Role */
   useEffect(() => {
-    if (!auth) return;
-    const unsub = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
+    const fetchUser = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const res = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
 
-        try {
-          const res = await fetch("/api/users/me", {
-            headers: { email: currentUser.email },
-          });
+        if (res.ok) {
           const data = await res.json();
-          setRole(data.role || "user");
-        } catch {
-          setRole("user");
+          setUser(data.user);
+          setRole(data.user.role || "user");
+        } else {
+          setUser(null);
+          setRole(null);
         }
-      } else {
+      } catch {
         setUser(null);
         setRole(null);
       }
-    });
+    };
 
-    return () => unsub();
+    fetchUser();
+
+    const handleFocus = () => {
+      fetchUser();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchUser();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   /* 🔔 Fetch Notices for Notifications */
@@ -108,8 +125,11 @@ export default function Navbar() {
   }, [showNotifications]);
 
   const handleLogout = async () => {
-    if (!auth) return;
-    await signOut(auth);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
     setUser(null);
     setRole(null);
   };
@@ -176,7 +196,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
-            {role === "admin" && (
+            {role?.toLowerCase() === "admin" && (
               <Link
                 href="/admin/dashboard"
                 className="px-3 py-1 bg-yellow-400 text-black rounded font-semibold hover:bg-yellow-500"
@@ -187,7 +207,7 @@ export default function Navbar() {
 
             {user ? (
               <>
-                <span>{user.email}</span>
+                <span>{user.name || user.email}</span>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-1 px-3 py-1 bg-red-600 rounded hover:bg-red-700"

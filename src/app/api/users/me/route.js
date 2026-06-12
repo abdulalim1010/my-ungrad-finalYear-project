@@ -1,21 +1,32 @@
-import { clientPromise } from "@/lib/mongodb";
+import { verifyToken } from "@/lib/jwt";
+import { cookies } from "next/headers";
 
-export async function GET(req) {
+export async function GET() {
   try {
-    // 🔐 Read email from headers
-    const email = req.headers.get("email");
+    const cookieStore = cookies();
+    const token = cookieStore.get("auth_token")?.value;
 
-    if (!email) {
+    if (!token) {
       return new Response(
-        JSON.stringify({ error: "Email header missing" }),
-        { status: 400 }
+        JSON.stringify({ error: "Not authenticated" }),
+        { status: 401 }
       );
     }
 
+    const decoded = verifyToken(token);
+
+    if (!decoded) {
+      return new Response(
+        JSON.stringify({ error: "Invalid token" }),
+        { status: 401 }
+      );
+    }
+
+    const { clientPromise } = await import("@/lib/mongodb");
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "departmentDB");
 
-    const user = await db.collection("users").findOne({ email });
+    const user = await db.collection("users").findOne({ email: decoded.email });
 
     if (!user) {
       return new Response(
@@ -27,7 +38,7 @@ export async function GET(req) {
     return new Response(
       JSON.stringify({
         email: user.email,
-        role: user.role || "user", // 🔐 default user
+        role: user.role || "user",
         name: user.name,
       }),
       { status: 200 }

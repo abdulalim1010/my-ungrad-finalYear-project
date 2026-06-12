@@ -1,4 +1,10 @@
 import { clientPromise } from "@/lib/mongodb";
+import bcrypt from "bcryptjs";
+
+const ADMIN_EMAILS = [
+  "admin@mydepartment.edu",
+  "chairman@mydepartment.edu",
+];
 
 /**
  * POST: Register user in MongoDB
@@ -6,11 +12,11 @@ import { clientPromise } from "@/lib/mongodb";
 export async function POST(req) {
   try {
     const data = await req.json();
-    const { name, email, firebaseUid } = data;
+    const { name, email, password } = data;
 
-    if (!name || !email || !firebaseUid) {
+    if (!name || !email || !password) {
       return new Response(
-        JSON.stringify({ error: "Name, Email and Firebase UID are required" }),
+        JSON.stringify({ error: "Name, Email and Password are required" }),
         { status: 400 }
       );
     }
@@ -30,20 +36,15 @@ export async function POST(req) {
       );
     }
 
-    // 🔐 Admin emails
-    const ADMIN_EMAILS = [
-      "admin@mydepartment.edu",
-      "chairman@mydepartment.edu",
-    ];
-
-    // ✅ FINAL ROLE LOGIC
+    const hashedPassword = await bcrypt.hash(password, 10);
     const role = ADMIN_EMAILS.includes(email) ? "admin" : "user";
 
     const result = await db.collection("users").insertOne({
       name,
       email,
-      firebaseUid,
-      role, // user | admin
+      password: hashedPassword,
+      firebaseUid: null,
+      role,
       createdAt: new Date(),
     });
 
