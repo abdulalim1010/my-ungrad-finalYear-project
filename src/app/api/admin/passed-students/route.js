@@ -25,18 +25,23 @@ import { ObjectId } from "mongodb";
         );
       }
 
-      // Upload image to cloudinary
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      if (typeof image.arrayBuffer !== "function") {
+        return NextResponse.json(
+          { message: "Invalid image file" },
+          { status: 400 }
+        );
+      }
 
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "passed-students" }, (err, result) => {
-            if (err) reject(err);
-            resolve(result);
-          })
-          .end(buffer);
-      });
+      const buffer = Buffer.from(await image.arrayBuffer());
+      const mimeType = image.type || "image/jpeg";
+
+      const uploadResult = await cloudinary.uploader.upload(
+        `data:${mimeType};base64,${buffer.toString("base64")}`,
+        {
+          folder: "passed-students",
+          resource_type: "image",
+        }
+      );
 
       const client = await clientPromise;
       const db = client.db(process.env.MONGODB_DB || "departmentDB");

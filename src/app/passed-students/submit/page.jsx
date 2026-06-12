@@ -3,6 +3,31 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 
+const CLOUDINARY_CLOUD_NAME =
+  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dxbkaeshc";
+const CLOUDINARY_UPLOAD_PRESET =
+  process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "notices_upload";
+
+async function uploadPhotoToCloudinary(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  formData.append("folder", "passed-students");
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: "POST", body: formData }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error?.message || "Photo upload failed");
+  }
+
+  return data.secure_url;
+}
+
 export default function PassedStudentSubmit() {
   const [loading, setLoading] = useState(false);
   const [photoError, setPhotoError] = useState("");
@@ -24,15 +49,32 @@ export default function PassedStudentSubmit() {
 
     const form = e.target;
     const formData = new FormData(form);
+    const photoFile = formData.get("photo");
 
     try {
+      if (!photoFile || typeof photoFile.arrayBuffer !== "function") {
+        throw new Error("Please select a profile photo");
+      }
+
+      const photoUrl = await uploadPhotoToCloudinary(photoFile);
+
       const res = await fetch("/api/passed-students", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          session: formData.get("session"),
+          universityBatch: formData.get("universityBatch"),
+          departmentBatch: formData.get("departmentBatch"),
+          company: formData.get("company") || "",
+          photoUrl,
+        }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Submit failed");
+      }
 
       Swal.fire("Success 🎉", "Request submitted for approval", "success");
       form.reset();
