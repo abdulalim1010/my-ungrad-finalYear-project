@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/app/components/firebase";
 import { User } from "lucide-react";
 
 export default function Topbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (!auth) return;
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsub();
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        }
+      } catch (err) {
+        console.error("Failed to fetch admin user:", err);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   return (
@@ -25,7 +31,9 @@ export default function Topbar() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
             <User size={18} className="text-gray-600" />
-            <span className="text-sm font-medium text-gray-700">{user.email}</span>
+            <span className="text-sm font-medium text-gray-700">
+              {user.name || user.email}
+            </span>
           </div>
         </div>
       )}

@@ -126,12 +126,16 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
     } catch (err) {
       console.error("Logout error:", err);
     }
     setUser(null);
     setRole(null);
+    window.location.href = "/";
   };
 
   /* ===== NAV LINKS ===== */

@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { showSuccess, showError, showDeleteConfirm, showWarning } from "@/utils/swal";
 import { Upload, FileText, Download, Trash2, Link as LinkIcon } from "lucide-react";
-import { auth } from "@/app/components/firebase";
 
 export default function AdminAcademicUpload({ type: fixedType }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -21,12 +19,19 @@ export default function AdminAcademicUpload({ type: fixedType }) {
   const [loadingList, setLoadingList] = useState(false);
 
   useEffect(() => {
-    if (auth) {
-      const unsub = onAuthStateChanged(auth, (user) => {
-        setCurrentUser(user);
-      });
-      return () => unsub();
-    }
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentUser(data.user);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const loadUploadedFiles = async () => {
